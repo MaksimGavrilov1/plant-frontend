@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import LoginComponent from './component/LoginComponent';
 import RegisterComponent from './component/RegisterComponent';
+import ContainersComponent from './component/ContainersComponent';
 
 
 function App() {
@@ -29,6 +30,9 @@ function App() {
     we passes the imported component*/}
           <Route exact path='/data' element={<AuthenticatedRoute/>}>
             <Route exact path='/data' element={<SensorData/>}/>
+          </Route>
+          <Route exact path='/containers' element={<AuthenticatedRoute/>}>
+            <Route exact path='/containers' element={<ContainersComponent/>}/>
           </Route>
           <Route path='/register' element={<RegisterComponent />}></Route>
           {/* If any route mismatches the upper
