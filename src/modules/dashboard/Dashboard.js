@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -20,24 +21,11 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
-import { makeStyles } from "@mui/material/styles";
+import secureGetFetch from '../../service/CustomFetch';
+import { API_URL } from '../../service/AuthenticationService';
 
 
 const drawerWidth = 240;
-
-const useStyles = makeStyles((theme) => ({
-    rightAlignItem: {
-        marginLeft: "auto"
-    },
-    parentFlexRight: {
-        display: "flex",
-        justifyContent: "flex-end"
-    },
-    actions: {
-        display: "flex",
-        justifyContent: "end"
-    }
-}));
 
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
@@ -86,8 +74,18 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const mdTheme = createTheme();
 
 function DashboardContent() {
-    
-    const [open, setOpen] = React.useState(true);
+
+    const [containers, setContainers] = useState([]);
+
+    useEffect(() => {
+        secureGetFetch("http://localhost:8080/container/all")
+            .then(res => res.json())
+            .then((result) => {
+                setContainers(result);
+            }
+            )
+    }, [])
+    const [open, setOpen] = useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
     };
@@ -95,10 +93,9 @@ function DashboardContent() {
 
     return (
         <ThemeProvider theme={mdTheme}>
-            const classes = useStyles()
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
-                <AppBar position="absolute" open={open}>
+                <AppBar sx={{ bgcolor: "green" }} position="absolute" open={open}>
                     <Toolbar
                         sx={{
                             pr: '24px', // keep right padding when drawer closed
@@ -123,7 +120,7 @@ function DashboardContent() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            Dashboard
+                            Containers
                         </Typography>
                         <IconButton color="inherit">
                             <Badge badgeContent={4} color="secondary">
@@ -165,23 +162,42 @@ function DashboardContent() {
                     }}
                 >
                     <Toolbar />
-                    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-                        <Grid container spacing={3}>
-                            <Card sx={{ minWidth: 275, minHeight: 100, maxWidth: 300 }}>
-                                <CardContent>
-                                    <Typography sx={{ mb: 3 }} variant="h5" component="div">
-                                        Container 1
-                                        <br />
-                                    </Typography>
-                                    <Typography align='left' variant="body1">
-                                        This is a test description. Container is main entity of this app, it contains setups.
-                                        <br />
-                                    </Typography>
-                                </CardContent>
-                                <CardActions >
-                                    <Button sx={{}} size="medium">Check</Button>
-                                </CardActions>
-                            </Card>
+                    <Container align="center" maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+                        <Container disableGutters maxWidth="sm" component="main" sx={{ pt: 2, pb: 6 }}>
+                            <Typography
+                                component="h1"
+                                variant="h2"
+                                align="center"
+                                color="text.primary"
+                                gutterBottom
+                            >
+                                Containers
+                            </Typography>
+                            <Typography variant="h5" align="center" color="text.secondary" component="p">
+                                You can find all your containers at this page. If you don't have one, you can create it by pushing the button below.
+                            </Typography>
+                            <Button color='success' sx={{  mt:3 }} variant="contained" size='large'>Create container</Button>
+                        </Container>
+                        <Grid container spacing={0} alignItems="center" justifyContent="space-around">
+                            {containers.map((container) => (
+                                <Grid item sx={{ align: "center", mt: "20px" }}>
+                                    <Card item sx={{ minWidth: 250, minHeight: 100, maxWidth: 300 }} key={container.id}>
+                                        <CardContent>
+                                            <Typography sx={{ mb: 3 }} variant="h5" component="div">
+                                                {container.title}
+                                                <br />
+                                            </Typography>
+                                            <Typography align='left' variant="body1">
+                                                {container.description}
+                                                <br />
+                                            </Typography>
+                                        </CardContent>
+                                        <CardActions >
+                                            <Button sx={{color:"green"}} size="large">Check</Button>
+                                        </CardActions>
+                                    </Card>
+                                </Grid>
+                            ))}
                         </Grid>
                     </Container>
                 </Box>
