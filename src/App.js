@@ -9,7 +9,8 @@ import {
 import LoginComponent from './component/LoginComponent';
 import RegisterComponent from './component/RegisterComponent';
 import ContainersComponent from './component/ContainersComponent';
-
+import CreateContainer from './component/CreateContainer';
+import OneContainer from './modules/ViewContainer';
 
 function App() {
   return (
@@ -33,6 +34,12 @@ function App() {
           </Route>
           <Route exact path='/containers' element={<AuthenticatedRoute/>}>
             <Route exact path='/containers' element={<ContainersComponent/>}/>
+          </Route>
+          <Route exact path='/containers/create' element={<AuthenticatedRoute/>}>
+            <Route exact path='/containers/create' element={<CreateContainer/>}/>
+          </Route>
+          <Route exact path='/containers/view/:containerId' element={<AuthenticatedRoute/>}>
+            <Route exact path='/containers/view/:containerId' element={<OneContainer/>}/>
           </Route>
           <Route path='/register' element={<RegisterComponent />}></Route>
           {/* If any route mismatches the upper

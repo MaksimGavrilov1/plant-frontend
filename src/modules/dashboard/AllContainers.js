@@ -22,7 +22,10 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import secureGetFetch from '../../service/CustomFetch';
-import { API_URL } from '../../service/AuthenticationService';
+import { useNavigate } from 'react-router-dom';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
 
 
 const drawerWidth = 240;
@@ -76,6 +79,7 @@ const mdTheme = createTheme();
 function DashboardContent() {
 
     const [containers, setContainers] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         secureGetFetch("http://localhost:8080/container/all")
@@ -144,7 +148,17 @@ function DashboardContent() {
                     </Toolbar>
                     <Divider />
                     <List component="nav">
-                        {mainListItems}
+                    {
+                            mainListItems.map((item, index) => {
+                                const { text, icon, to } = item;
+                                return (
+                                    <ListItemButton onClick={()=>{navigate({to})}} key={text}>
+                                        {icon && <ListItemIcon>{icon}</ListItemIcon>}
+                                        <ListItemText primary={text} />
+                                    </ListItemButton>
+                                );
+                            })
+                        }
                         <Divider sx={{ my: 1 }} />
                         {secondaryListItems}
                     </List>
@@ -176,12 +190,12 @@ function DashboardContent() {
                             <Typography variant="h5" align="center" color="text.secondary" component="p">
                                 You can find all your containers at this page. If you don't have one, you can create it by pushing the button below.
                             </Typography>
-                            <Button color='success' sx={{  mt:3 }} variant="contained" size='large'>Create container</Button>
+                            <Button color='success' sx={{  mt:3 }} variant="contained" size='large' onClick={()=>{navigate('/containers/create')}}>Create container</Button>
                         </Container>
                         <Grid container spacing={0} alignItems="center" justifyContent="space-around">
                             {containers.map((container) => (
-                                <Grid item sx={{ align: "center", mt: "20px" }}>
-                                    <Card item sx={{ minWidth: 250, minHeight: 100, maxWidth: 300 }} key={container.id}>
+                                <Grid item sx={{ align: "center", mt: "20px" }} key={container.id}>
+                                    <Card  sx={{ minWidth: 300, minHeight: 220, maxWidth: 300 }} >
                                         <CardContent>
                                             <Typography sx={{ mb: 3 }} variant="h5" component="div">
                                                 {container.title}
@@ -193,7 +207,7 @@ function DashboardContent() {
                                             </Typography>
                                         </CardContent>
                                         <CardActions >
-                                            <Button sx={{color:"green"}} size="large">Check</Button>
+                                            <Button sx={{color:"green"}} onClick={()=>{navigate('/containers/view/' + container.id)}} size="large">Check</Button>
                                         </CardActions>
                                     </Card>
                                 </Grid>
@@ -206,6 +220,6 @@ function DashboardContent() {
     );
 }
 
-export default function Dashboard() {
+export default function AllContainers() {
     return <DashboardContent />;
 }

@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import AllContainers from "../modules/dashboard/AllContainers";
+import Dashboard from "../modules/CreateContainer";
 
 class SensorData extends Component {
   
   render () {
     return (
       <div className="App">
-          <AllContainers></AllContainers>
+          <Dashboard></Dashboard>
       </div>
     );
   }

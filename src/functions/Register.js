@@ -30,16 +30,6 @@ export default function RegisterForm() {
     
 
   const onSubmit = (data) => {
-    const temp = {
-        firstName : "",
-        lastName : "",
-        middleName : "",
-        username : "",
-        password : "",
-        confirmPassword : ""
-    }
-    
-    console.log(JSON.stringify(data))
     fetch(API_URL + "/register", {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         headers: {
