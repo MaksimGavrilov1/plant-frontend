@@ -25,6 +25,17 @@ import { Link, useParams } from 'react-router-dom';
 import HumidityLogo from '../humidity.svg';
 import ThermostatLogo from '../thermometer-svgrepo-com.svg';
 import secureGetFetch from '../service/CustomFetch';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
 
 const drawerWidth = 240;
@@ -75,23 +86,28 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const mdTheme = createTheme();
 
-function ContainerDashboard({containerId}) {
-
+function ContainerDashboard() {
+    const params = useParams();
+    const containerId = params.containerId;
+    const navigate = useNavigate();
     const [containerItem, setContainerItem] = useState({});
-
+    let isLoaded = false;
     useEffect(() => {
+
         secureGetFetch("http://localhost:8080/container/view/" + containerId)
             .then(res => res.json())
             .then((result) => {
                 setContainerItem(result);
             }
             )
+        isLoaded = true
     }, [])
     const [open, setOpen] = useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
     };
-    console.log(containerItem);
+
+    console.log(containerItem)
 
     return (
         <ThemeProvider theme={mdTheme}>
@@ -101,7 +117,7 @@ function ContainerDashboard({containerId}) {
                     <Toolbar
                         sx={{
                             pr: '24px', // keep right padding when drawer closed
-                            alignItems:'center'
+                            alignItems: 'center'
                         }}
                     >
                         <IconButton
@@ -239,7 +255,7 @@ function ContainerDashboard({containerId}) {
                                         </Grid>
 
                                     </Grid>
-                                    <Grid container alignItems="center" justifyContent="center"  spacing={3}>
+                                    <Grid container alignItems="center" justifyContent="center" spacing={3}>
                                         <Grid item xs={6} sm={6} md={4} lg={4}>
                                             {/* <img src={HumidityLogo}></img> */}
                                             <img src={HumidityLogo} style={{ width: '100%', height: '100%' }}></img>
@@ -259,8 +275,49 @@ function ContainerDashboard({containerId}) {
                                 </Paper>
                             </Grid>
                             <Grid item xs={12}>
-                                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                                </Paper>
+                                    <Typography component="h1"
+                                        variant="h3"
+                                        color="inherit"
+                                        align='left'
+                                        sx={{ flexGrow: 1 }}>
+                                        Setups
+                                    </Typography>
+
+                                    <TableContainer component={Paper}>
+                                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell sx={{fontSize:'20pt'}} align="left">#</TableCell>
+                                                    <TableCell sx={{fontSize:'20pt'}} align="left">Address</TableCell>
+                                                    <TableCell sx={{fontSize:'20pt'}} align="center">Levels</TableCell>
+                                                    <TableCell sx={{fontSize:'20pt'}} align='center'>Free cells</TableCell>
+                                                    <TableCell sx={{fontSize:'20pt'}} align='left'></TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {containerItem.setups && containerItem.setups.map((setup, index) => (
+                                                    <TableRow
+                                                        key={setup.id}
+                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                    >
+                                                        <TableCell sx={{fontSize:'20pt'}} component="th" scope="row">
+                                                            {index + 1}
+                                                        </TableCell>
+                                                        <TableCell sx={{fontSize:'20pt'}} align="left">{setup.address}</TableCell>
+                                                        <TableCell sx={{fontSize:'20pt'}} align="center">{setup.levels.filter((value, index, self)=>{
+                                                            return self.findIndex(v => v.level === value.level) === index;
+                                                        }).length}</TableCell>
+                                                        <TableCell sx={{fontSize:'20pt'}} align="center">{setup.levels.filter((value)=>!value.plant).length}</TableCell>
+                                                        <TableCell><Button sx={{color:"green"}} onClick={()=>{navigate('/containers/view/' + setup.id)}} size="large">Check</Button></TableCell>
+                                                        {/* <TableCell align="right">{row.temperature}</TableCell>
+                                                        <TableCell align="right">{row.humidity}</TableCell>
+                                                        <TableCell align="right">{row.time}</TableCell> */}
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                
                             </Grid>
                         </Grid>
                     </Container>
@@ -272,7 +329,5 @@ function ContainerDashboard({containerId}) {
 
 export default function OneContainer() {
 
-    const params = useParams();
-
-    return <ContainerDashboard containerId={params.containerId} />;
+    return <ContainerDashboard />;
 }
