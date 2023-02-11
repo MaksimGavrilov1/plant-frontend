@@ -25,9 +25,6 @@ import { Link, useParams } from 'react-router-dom';
 import HumidityLogo from '../humidity.svg';
 import ThermostatLogo from '../thermometer-svgrepo-com.svg';
 import secureGetFetch from '../service/CustomFetch';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import Table from '@mui/material/Table';
@@ -195,9 +192,9 @@ function ContainerDashboard() {
                     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
-                                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', minHeight: 100 }}>
-                                    <Typography component="h1"
-                                        variant="h3"
+                                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', minHeight: 'fit-content', minWidth: 'fit-content' }}>
+                                    <Typography component="h2"
+                                        variant="h4"
                                         color="inherit"
                                         align='left'
                                         noWrap
@@ -208,8 +205,8 @@ function ContainerDashboard() {
                             </Grid>
                             <Grid item xs={12}>
                                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', minHeight: 'fit-content', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                    <Typography component="h1"
-                                        variant="h4"
+                                    <Typography component="h5"
+                                        variant="h5"
                                         color="inherit"
                                         align='left'
                                         style={{ wordWrap: "break-word" }}
@@ -275,49 +272,49 @@ function ContainerDashboard() {
                                 </Paper>
                             </Grid>
                             <Grid item xs={12}>
-                                    <Typography component="h1"
-                                        variant="h3"
-                                        color="inherit"
-                                        align='left'
-                                        sx={{ flexGrow: 1 }}>
-                                        Setups
-                                    </Typography>
+                                <Typography component="h4"
+                                    variant="h4"
+                                    color="inherit"
+                                    align='left'
+                                    sx={{ flexGrow: 1, fontSize: '20pt' }}>
+                                    Setups
+                                </Typography>
 
-                                    <TableContainer component={Paper}>
-                                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell sx={{fontSize:'20pt'}} align="left">#</TableCell>
-                                                    <TableCell sx={{fontSize:'20pt'}} align="left">Address</TableCell>
-                                                    <TableCell sx={{fontSize:'20pt'}} align="center">Levels</TableCell>
-                                                    <TableCell sx={{fontSize:'20pt'}} align='center'>Free cells</TableCell>
-                                                    <TableCell sx={{fontSize:'20pt'}} align='left'></TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {containerItem.setups && containerItem.setups.map((setup, index) => (
-                                                    <TableRow
-                                                        key={setup.id}
-                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                    >
-                                                        <TableCell sx={{fontSize:'20pt'}} component="th" scope="row">
-                                                            {index + 1}
-                                                        </TableCell>
-                                                        <TableCell sx={{fontSize:'20pt'}} align="left">{setup.address}</TableCell>
-                                                        <TableCell sx={{fontSize:'20pt'}} align="center">{setup.levels.filter((value, index, self)=>{
-                                                            return self.findIndex(v => v.level === value.level) === index;
-                                                        }).length}</TableCell>
-                                                        <TableCell sx={{fontSize:'20pt'}} align="center">{setup.levels.filter((value)=>!value.plant).length}</TableCell>
-                                                        <TableCell><Button sx={{color:"green"}} onClick={()=>{navigate('/containers/view/' + setup.id)}} size="large">Check</Button></TableCell>
-                                                        {/* <TableCell align="right">{row.temperature}</TableCell>
+                                <TableContainer component={Paper}>
+                                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell sx={{ fontSize: '15pt' }} align="left">#</TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align="left">Address</TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align="center">Levels</TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align='center'>Free cells</TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align='left'></TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {containerItem.setups && containerItem.setups.map((setup, index) => (
+                                                <TableRow
+                                                    key={setup.id}
+                                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                >
+                                                    <TableCell sx={{ fontSize: '15pt' }} component="th" scope="row">
+                                                        {index + 1}
+                                                    </TableCell>
+                                                    <TableCell sx={{ fontSize: '15pt' }} align="left">{setup.address}</TableCell>
+                                                    <TableCell sx={{ fontSize: '15pt' }} align="center">{setup.levels.filter((value, index, self) => {
+                                                        return self.findIndex(v => v.level === value.level) === index;
+                                                    }).length}</TableCell>
+                                                    <TableCell sx={{ fontSize: '15pt' }} align="center">{setup.levels.filter((value) => !value.plant).length}</TableCell>
+                                                    <TableCell><Button sx={{ color: "green" }} onClick={() => { navigate('/containers/view/' + setup.id) }} size="large">Check</Button></TableCell>
+                                                    {/* <TableCell align="right">{row.temperature}</TableCell>
                                                         <TableCell align="right">{row.humidity}</TableCell>
                                                         <TableCell align="right">{row.time}</TableCell> */}
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+
                             </Grid>
                         </Grid>
                     </Container>

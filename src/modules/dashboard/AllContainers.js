@@ -22,7 +22,7 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import secureGetFetch from '../../service/CustomFetch';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,  Link } from 'react-router-dom';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -152,7 +152,7 @@ function DashboardContent() {
                             mainListItems.map((item, index) => {
                                 const { text, icon, to } = item;
                                 return (
-                                    <ListItemButton onClick={()=>{navigate({to})}} key={text}>
+                                    <ListItemButton component={Link}  to={item.to} key={text}>
                                         {icon && <ListItemIcon>{icon}</ListItemIcon>}
                                         <ListItemText primary={text} />
                                     </ListItemButton>
@@ -192,6 +192,7 @@ function DashboardContent() {
                             </Typography>
                             <Button color='success' sx={{  mt:3 }} variant="contained" size='large' onClick={()=>{navigate('/containers/create')}}>Create container</Button>
                         </Container>
+                        <Divider></Divider>
                         <Grid container spacing={0} alignItems="center" justifyContent="space-around">
                             {containers.map((container) => (
                                 <Grid item sx={{ align: "center", mt: "20px" }} key={container.id}>

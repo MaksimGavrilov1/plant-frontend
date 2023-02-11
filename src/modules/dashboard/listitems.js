@@ -14,13 +14,13 @@ import { useNavigate } from 'react-router-dom';
 
 export const mainListItems = [
   {
-    text: "Dashboard",
+    text: "Containers",
     icon: <DashboardIcon />,
     to: "/containers" // <-- add link targets
   },
   {
     text: "Plants",
-    icon: <ShoppingCartIcon />,
+    icon: <PeopleIcon />,
     to: "/plants" // <-- add link targets
   },
   {

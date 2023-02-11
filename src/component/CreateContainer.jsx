@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Dashboard from "../modules/CreateContainer";
 
-class SensorData extends Component {
+class CreateContainer extends Component {
   
   render () {
     return (
@@ -13,4 +13,4 @@ class SensorData extends Component {
   
 };
   
-export default SensorData;
+export default CreateContainer;
