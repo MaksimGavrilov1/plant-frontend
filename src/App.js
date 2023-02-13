@@ -13,6 +13,8 @@ import CreateContainer from './component/CreateContainer';
 import OneContainer from './modules/ViewContainer';
 import PlantsComponent from './component/PlantsComponent';
 import CreatePlant from './modules/create/CreatePlant';
+import ViewPlantComponent from './component/ViewPlant';
+import CreateTechnologicalMapComponent from './component/CreateTechnologicalMapComponent';
 
 function App() {
   return (
@@ -50,7 +52,10 @@ function App() {
             <Route exact path='/plants/create' element={<CreatePlant/>}/>
           </Route>
           <Route exact path='/plants/view/:plantId' element={<AuthenticatedRoute/>}>
-            <Route exact path='/plants/view/:plantId' element={<OneContainer/>}/>
+            <Route exact path='/plants/view/:plantId' element={<ViewPlantComponent/>}/>
+          </Route>
+          <Route exact path='/maps/create/:plantId' element={<AuthenticatedRoute/>}>
+            <Route exact path='/maps/create/:plantId' element={<CreateTechnologicalMapComponent/>}/>
           </Route>
           <Route path='/register' element={<RegisterComponent />}></Route>
           {/* If any route mismatches the upper

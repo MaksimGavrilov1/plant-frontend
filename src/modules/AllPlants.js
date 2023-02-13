@@ -198,7 +198,7 @@ function DashboardContent() {
                         {plants.map((plant) => (
                             <Grid item sx={{ align: "center", mt: "30px" }} key={plant.id}>
                                 <Card sx={{ maxWidth: 345 }}>
-                                    <CardActionArea>
+                                    <CardActionArea onClick={() => { navigate('/plants/view/' + plant.id) }}>
                                         <CardMedia
                                             component="img"
                                             height="140"
@@ -215,9 +215,8 @@ function DashboardContent() {
                                         </CardContent>
                                     </CardActionArea>
                                     <CardActions>
-                                    <Button sx={{ color: "green" }}  size="large">Check</Button>
-                                        <Button size="small" color="primary" onClick={() => { navigate('/plants/view/' + plant.id) }}>
-                                            Share
+                                        <Button sx={{color:"green"}} size="small" color="primary" onClick={() => { navigate('/plants/view/' + plant.id) }}>
+                                            Proceed
                                         </Button>
                                     </CardActions>
                                 </Card>

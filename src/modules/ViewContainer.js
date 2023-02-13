@@ -104,8 +104,6 @@ function ContainerDashboard() {
         setOpen(!open);
     };
 
-    console.log(containerItem)
-
     return (
         <ThemeProvider theme={mdTheme}>
             <Box sx={{ display: 'flex' }}>
