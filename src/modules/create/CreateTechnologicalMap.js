@@ -18,14 +18,14 @@ import { mainListItems, secondaryListItems } from '../dashboard/listitems';
 import secureGetFetch from '../../service/CustomFetch';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import { Autocomplete, ListItemIcon } from '@mui/material';
 import { USER_TOKEN, API_URL } from '../../service/AuthenticationService';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
@@ -80,13 +80,20 @@ const mdTheme = createTheme();
 
 function DashboardContent() {
     const navigate = useNavigate();
+    const params = useParams();
+    const plantId = params.plantId;
 
-    const { register, handleSubmit, formState: { errors }, watch } = useForm({
+    const { register, handleSubmit, formState: { errors }, watch, reset, trigger, setError, control } = useForm({
         mode: "all"
     });
 
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: "conditions"
+    });
+
     const onSubmit = (data) => {
-        fetch(API_URL + "/container/create", {
+        fetch(API_URL + "/maps/create/" + plantId, {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             headers: {
                 'Content-Type': 'application/json',
@@ -95,19 +102,11 @@ function DashboardContent() {
             },
             body: JSON.stringify(data) // body data type must match "Content-Type" header
         })
-        navigate('/containers')
+        navigate('/plants/view/' + plantId)
     };
-
 
     const [devicesIds, setDevicesIds] = useState([]);
-    const [deviceId, setDeviceId] = useState('')
-    const [num, setNum] = useState();
     const limitChar = 3;
-    const handleChange = (e) => {
-        if (e.target.value.toString().length <= limitChar) {
-            setNum(e.target.value);
-        }
-    };
 
     useEffect(() => {
         secureGetFetch("http://localhost:8080/device/ids")
@@ -204,7 +203,7 @@ function DashboardContent() {
                     }}
                 >
                     <Toolbar />
-                    <Container component="main" maxWidth="xs">
+                    <Container component="main" maxWidth="lg">
                         <CssBaseline />
                         <Box
                             sx={{
@@ -221,175 +220,239 @@ function DashboardContent() {
                                 Create technological map
                             </Typography>
                             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
-                                <Grid container spacing={5}>
+                                <Grid container spacing={5}
+                                >
+                                    <Grid container sx={{ mt: 3 }}>
+                                        <Grid item xs={12} >
+                                            <TextField
+                                                required
+
+                                                id="title"
+                                                label="Title"
+                                                name="title"
+
+                                                autoComplete="title"
+                                                {...register('title', {
+                                                    required: "Title is required"
+                                                })}
+                                                error={errors?.title ? true : false}
+                                                helperText={errors?.title?.message}
+                                            />
+                                        </Grid>
+                                        
+                                        <Grid  container justifyContent="flex-end" xs={6} sx={{mt:2}}> 
+                                            <TextField
+
+                                                required
+                                                type="number"
+                                                id="temperatureMin"
+                                                label="Min Temperature"
+                                                name="temperatureMin"
+                                                inputProps={{
+                                                    maxLength: 13,
+                                                    step: "0.1"
+                                                }}
+                                                {...register('temperatureMin', {
+                                                    required: "Field is required",
+                                                    max: {
+                                                        value: 40,
+                                                        message: 'Max value is 40'
+                                                    },
+                                                    min: {
+                                                        value: 10,
+                                                        message: 'Min value is 10'
+                                                    }
+                                                })}
+                                                error={errors?.temperatureMin ? true : false}
+                                                helperText={errors?.temperatureMin?.message}
+                                            />
+                                        </Grid>
+                                       
+                                        <Grid xs={6} container justifyContent="flex-start" sx={{mt:2}}>
+                                            <TextField
+
+                                                required
+                                                type="number"
+                                                id="temperatureMax"
+                                                label="Max Temperature"
+                                                name="temperatureMax"
+                                                min="0"
+                                                max="100"
+                                                inputProps={{
+                                                    maxLength: 3,
+                                                    step: "0.1",
+
+                                                }}
+                                                {...register('temperatureMax', {
+                                                    required: "Field is required",
+                                                    max: {
+                                                        value: 40,
+                                                        message: 'Max value is 40'
+                                                    },
+                                                    min: {
+                                                        value: 10,
+                                                        message: 'Min value is 10'
+                                                    }
+                                                })}
+                                                error={errors?.temperatureMax ? true : false}
+                                                helperText={errors?.temperatureMax?.message}
+                                            />
+                                        </Grid>
+                                        <Grid container justifyContent="flex-end" xs={6} sx={{mt:2}}>
+                                            <TextField
+
+                                                required
+                                                type="number"
+                                                id="humidityMin"
+                                                label="Min Humidity"
+                                                name="humidityMin"
+                                                inputProps={{
+                                                    maxLength: 13,
+                                                    step: "0.1"
+                                                }}
+                                                {...register('humidityMin', {
+                                                    required: "Field is required",
+                                                    max: {
+                                                        value: 100,
+                                                        message: 'Max value is 100'
+                                                    },
+                                                    min: {
+                                                        value: 0,
+                                                        message: 'Min value is 0'
+                                                    }
+                                                })}
+                                                error={errors?.humidityMin ? true : false}
+                                                helperText={errors?.humidityMin?.message}
+                                            />
+                                        </Grid>
+                                        <Grid  container justifyContent="flex-start" xs={6} sx={{mt:2}}>
+                                            <TextField
+
+                                                required
+                                                type="number"
+                                                id="humidityMax"
+                                                label="Max Humidity"
+                                                name="humidityMax"
+                                                inputProps={{
+                                                    maxLength: 13,
+                                                    step: "0.1"
+                                                }}
+                                                {...register('humidityMax', {
+                                                    required: "Field is required",
+                                                    max: {
+                                                        value: 100,
+                                                        message: 'Max value is 100'
+                                                    },
+                                                    min: {
+                                                        value: 0,
+                                                        message: 'Min value is 0'
+                                                    }
+                                                })}
+                                                error={errors?.humidityMax ? true : false}
+                                                helperText={errors?.humidityMax?.message}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sx={{mt:2}}>
+                                            <TextField
+
+
+                                                type="number"
+                                                id="growthPeriod"
+                                                label="Growth Period"
+                                                name="growthPeriod"
+                                                inputProps={{
+                                                    maxLength: 100,
+                                                    step: "1"
+                                                }}
+                                                {...register('growthPeriod', {
+                                                    required: "Field is required",
+                                                    pattern: {
+                                                        value: /^\d+$/,
+                                                        message: 'Only integer values'
+                                                    },
+                                                    max: {
+                                                        value: 999,
+                                                        message: 'Max value is 999'
+                                                    },
+                                                    min: {
+                                                        value: 1.0,
+                                                        message: 'Min value is 1'
+                                                    }
+
+                                                })}
+                                                error={errors?.growthPeriod ? true : false}
+                                                helperText={errors?.growthPeriod?.message}
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                    <Grid item xs={12} sx={{ padding: 0 }}>
+                                        <Typography component="h3" variant="h5" align='left'>
+                                            Conditions
+                                        </Typography>
+                                        <Divider></Divider>
+                                    </Grid>
+                                    <Grid item xs={12} >
+                                        {fields.map((item, index) => {
+                                            return (
+                                                <Grid container spacing={3} key={item.id} sx={{mt:1}}>
+                                                    <Grid item xs={8}>
+                                                        <TextField
+                                                            // sx={{ mt: 3 }}
+                                                            required
+                                                            fullWidth
+                                                            id="description"
+                                                            label="Condition description"
+                                                            name="description"
+
+                                                            autoComplete="description"
+                                                            {...register(`conditions.${index}.description`, {
+                                                                required: "description is required"
+                                                            })}
+                                                        // error={errors?.description ? true : false}
+                                                        // helperText={errors?.description?.message}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item xs={4}  >
+                                                        <Button
+                                                            // sx={{ mt: 3 }}
+                                                            sx={{ mt: 1.5 }}
+                                                            size="small"
+                                                            fullWidth
+                                                            variant="outlined"
+                                                            color='error'
+                                                            onClick={() => remove(index)}
+                                                        >
+                                                            Delete
+                                                        </Button>
+                                                    </Grid>
+                                                </Grid>
+                                            )
+                                        })}
+
+                                    </Grid>
                                     <Grid item xs={12}>
-                                        <TextField
-                                            required
-                                            fullWidth
-                                            id="title"
-                                            label="Title"
-                                            name="title"
+                                        <Button
+                                            variant="outlined"
+                                            color="secondary"
+                                            size='small'
+                                            onClick={() => {
+                                                append({ description: '' });
+                                            }}
 
-                                            autoComplete="title"
-                                            {...register('title', {
-                                                required: "Title is required"
-                                            })}
-                                            error={errors?.title ? true : false}
-                                            helperText={errors?.title?.message}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            fullWidth
-                                            required
-                                            type="number"
-                                            id="temperatureMin"
-                                            label="Min Temperature"
-                                            name="temperatureMin"
-                                            inputProps={{
-                                                maxLength: 13,
-                                                step: "0.1"
-                                            }}
-                                            {...register('temperatureMin', {
-                                                required: "Field is required",
-                                                max: {
-                                                    value: 40,
-                                                    message: 'Max value is 40'
-                                                },
-                                                min: {
-                                                    value: 10,
-                                                    message: 'Min value is 10'
-                                                }
-                                            })}
-                                            error={errors?.temperatureMin ? true : false}
-                                            helperText={errors?.temperatureMin?.message}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            fullWidth
-                                            required
-                                            type="number"
-                                            id="temperatureMax"
-                                            label="Max Temperature"
-                                            name="temperatureMax"
-                                            min="0"
-                                            max="100"
-                                            inputProps={{
-                                                maxLength: 3,
-                                                step: "0.1",
-
-                                            }}
-                                            {...register('temperatureMax', {
-                                                required: "Field is required",
-                                                max: {
-                                                    value: 40,
-                                                    message: 'Max value is 40'
-                                                },
-                                                min: {
-                                                    value: 10,
-                                                    message: 'Min value is 10'
-                                                }
-                                            })}
-                                            error={errors?.temperatureMax ? true : false}
-                                            helperText={errors?.temperatureMax?.message}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            fullWidth
-                                            required
-                                            type="number"
-                                            id="humidityMin"
-                                            label="Min Humidity"
-                                            name="humidityMin"
-                                            inputProps={{
-                                                maxLength: 13,
-                                                step: "0.1"
-                                            }}
-                                            {...register('humidityMin', {
-                                                required: "Field is required",
-                                                max: {
-                                                    value: 100,
-                                                    message: 'Max value is 100'
-                                                },
-                                                min: {
-                                                    value: 0,
-                                                    message: 'Min value is 0'
-                                                }
-                                            })}
-                                            error={errors?.humidityMin ? true : false}
-                                            helperText={errors?.humidityMin?.message}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6}>
-                                        <TextField
-                                            fullWidth
-                                            required
-                                            type="number"
-                                            id="humidityMax"
-                                            label="Max Humidity"
-                                            name="humidityMax"
-                                            inputProps={{
-                                                maxLength: 13,
-                                                step: "0.1"
-                                            }}
-                                            {...register('humidityMax', {
-                                                required: "Field is required",
-                                                max: {
-                                                    value: 100,
-                                                    message: 'Max value is 100'
-                                                },
-                                                min: {
-                                                    value: 0,
-                                                    message: 'Min value is 0'
-                                                }
-                                            })}
-                                            error={errors?.humidityMax ? true : false}
-                                            helperText={errors?.humidityMax?.message}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            fullWidth
-                                            
-                                            type="number"
-                                            id="growthPeriod"
-                                            label="Growth Period"
-                                            name="growthPeriod"
-                                            inputProps={{
-                                                maxLength: 100,
-                                                step: "1"
-                                            }}
-                                            {...register('growthPeriod', {
-                                                required: "Field is required",
-                                                pattern: {
-                                                    value: /^\d+$/,
-                                                    message: 'Only integer values'
-                                                },
-                                                max: {
-                                                    value: 999,
-                                                    message: 'Max value is 999'
-                                                },
-                                                min: {
-                                                    value: 1.0,
-                                                    message: 'Min value is 1'
-                                                }
-
-                                            })}
-                                            error={errors?.growthPeriod ? true : false}
-                                            helperText={errors?.growthPeriod?.message}
-                                        />
+                                        >
+                                            Add condition
+                                        </Button>
                                     </Grid>
                                 </Grid>
                                 <Button
                                     type="submit"
-                                    fullWidth
+                                    size="large"
                                     variant="contained"
+                                    color="success"
 
                                     sx={{ mt: 3, mb: 2 }}
                                 >
-                                    Create
+                                    Create Map
                                 </Button>
                             </Box>
                         </Box>

@@ -178,7 +178,6 @@ function DashboardContent() {
     const navigate = useNavigate();
     const [plantItem, setPlantItem] = useState({});
     useEffect(() => {
-        console.log(plantId)
         secureGetFetch("http://localhost:8080/plants/view/" + plantId)
             .then(res => res.json())
             .then((result) => {
@@ -190,7 +189,6 @@ function DashboardContent() {
     const toggleDrawer = () => {
         setOpen(!open);
     };
-    console.log(plantItem)
 
     return (
         <ThemeProvider theme={mdTheme}>

@@ -30,6 +30,7 @@ export default function RegisterForm() {
     
 
   const onSubmit = (data) => {
+    
     fetch(API_URL + "/register", {
         method: 'POST', // *GET, POST, PUT, DELETE, etc.
         headers: {

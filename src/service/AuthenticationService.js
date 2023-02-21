@@ -9,7 +9,8 @@ class AuthenticationService {
 
     executeBasicAuthenticationService(username, password) {
         return fetch(`http://localhost:8080/basicauth`,
-            { headers: { 'Authorization': this.createBasicAuthToken(username, password) } })
+            { headers: { 'Authorization': this.createBasicAuthToken(username, password) },
+                method: 'GET' })
     }
 
     createBasicAuthToken(username, password) {

@@ -15,6 +15,7 @@ import PlantsComponent from './component/PlantsComponent';
 import CreatePlant from './modules/create/CreatePlant';
 import ViewPlantComponent from './component/ViewPlant';
 import CreateTechnologicalMapComponent from './component/CreateTechnologicalMapComponent';
+import NewLoginComponent from './component/NewLoginComponent'
 
 function App() {
   return (
@@ -25,11 +26,11 @@ function App() {
           {/* This route is for home component
     with exact path "/", in component props
     we passes the imported component*/}
-         <Route exact path="/" element={<LoginComponent />} />
+         <Route exact path="/" element={<NewLoginComponent />} />
           {/* This route is for home component
     with exact path "/", in component props
     we passes the imported component*/}
-          <Route exact path="/login" element={<LoginComponent />} />
+          <Route exact path="/login" element={<NewLoginComponent />} />
           {/* This route is for home component
     with exact path "/", in component props
     we passes the imported component*/}
