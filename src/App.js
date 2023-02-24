@@ -16,6 +16,9 @@ import CreatePlant from './modules/create/CreatePlant';
 import ViewPlantComponent from './component/ViewPlant';
 import CreateTechnologicalMapComponent from './component/CreateTechnologicalMapComponent';
 import NewLoginComponent from './component/NewLoginComponent'
+import CreateSetupComponent from './component/CreateSetupComponent';
+import CreateHydroponicSetup from './modules/create/CreateHydroponicSetup';
+import ViewSetupComponent from './component/ViewSetupComponent';
 
 function App() {
   return (
@@ -57,6 +60,12 @@ function App() {
           </Route>
           <Route exact path='/maps/create/:plantId' element={<AuthenticatedRoute/>}>
             <Route exact path='/maps/create/:plantId' element={<CreateTechnologicalMapComponent/>}/>
+          </Route>
+          <Route exact path='/setup/create/:containerId' element={<AuthenticatedRoute/>}>
+            <Route exact path='/setup/create/:containerId' element={<CreateHydroponicSetup/>}/>
+          </Route>
+          <Route exact path='/setup/view/:setupId' element={<AuthenticatedRoute/>}>
+            <Route exact path='/setup/view/:setupId' element={<ViewSetupComponent/>}/>
           </Route>
           <Route path='/register' element={<RegisterComponent />}></Route>
           {/* If any route mismatches the upper

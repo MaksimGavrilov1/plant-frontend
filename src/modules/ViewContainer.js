@@ -303,10 +303,7 @@ function ContainerDashboard() {
                                                         return self.findIndex(v => v.level === value.level) === index;
                                                     }).length}</TableCell>
                                                     <TableCell sx={{ fontSize: '15pt' }} align="center">{setup.levels.filter((value) => !value.plant).length}</TableCell>
-                                                    <TableCell><Button sx={{ color: "green" }} onClick={() => { navigate('/containers/view/' + setup.id) }} size="large">Check</Button></TableCell>
-                                                    {/* <TableCell align="right">{row.temperature}</TableCell>
-                                                        <TableCell align="right">{row.humidity}</TableCell>
-                                                        <TableCell align="right">{row.time}</TableCell> */}
+                                                    <TableCell><Button sx={{ color: "green" }} onClick={() => { navigate('/setup/view/' + setup.id) }} size="large">Check</Button></TableCell>                                                    
                                                 </TableRow>
                                             ))}
                                         </TableBody>
@@ -314,6 +311,15 @@ function ContainerDashboard() {
                                 </TableContainer>
 
                             </Grid>
+                            <Grid item xs={12}>
+                            <Button 
+                             sx={{  mt: 3, width:"20%" }}
+                             variant="contained"
+                             color="success"
+                             size='large'
+                             onClick={()=>{navigate('/setup/create/' + containerId)}}
+                            >Create setup</Button>
+                        </Grid>
                         </Grid>
                     </Container>
                 </Box>
