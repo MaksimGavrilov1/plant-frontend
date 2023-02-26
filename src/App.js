@@ -6,7 +6,7 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import LoginComponent from './component/LoginComponent';
+
 import RegisterComponent from './component/RegisterComponent';
 import ContainersComponent from './component/ContainersComponent';
 import CreateContainer from './component/CreateContainer';
@@ -16,9 +16,10 @@ import CreatePlant from './modules/create/CreatePlant';
 import ViewPlantComponent from './component/ViewPlant';
 import CreateTechnologicalMapComponent from './component/CreateTechnologicalMapComponent';
 import NewLoginComponent from './component/NewLoginComponent'
-import CreateSetupComponent from './component/CreateSetupComponent';
+
 import CreateHydroponicSetup from './modules/create/CreateHydroponicSetup';
 import ViewSetupComponent from './component/ViewSetupComponent';
+import PlantProcedureComponent from './component/PlantProcedureComponent';
 
 function App() {
   return (
@@ -66,6 +67,9 @@ function App() {
           </Route>
           <Route exact path='/setup/view/:setupId' element={<AuthenticatedRoute/>}>
             <Route exact path='/setup/view/:setupId' element={<ViewSetupComponent/>}/>
+          </Route>
+          <Route exact path='/setup/plant/:setupId' element={<AuthenticatedRoute/>}>
+            <Route exact path='/setup/plant/:setupId' element={<PlantProcedureComponent/>}/>
           </Route>
           <Route path='/register' element={<RegisterComponent />}></Route>
           {/* If any route mismatches the upper

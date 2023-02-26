@@ -29,7 +29,7 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 import Button from '@mui/material/Button';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-
+import Popover from '@mui/material/Popover';
 
 const drawerWidth = 240;
 
@@ -83,7 +83,7 @@ const mdTheme = createTheme({
         danger: '#e53e3e',
     },
     palette: {
-        
+
         primary: {
             main: '#0971f1',
             darker: '#053e85',
@@ -108,6 +108,18 @@ function ViewSetupContent() {
     const [cells, setCells] = useState([])
     const [level, setLevel] = useState(0)
     const [alignment, setAlignment] = React.useState(0);
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const openPopup = Boolean(anchorEl);
+    const id = openPopup ? 'simple-popover' : undefined;
 
     const handleChange = (event, newAlignment) => {
         setAlignment(newAlignment)
@@ -137,8 +149,8 @@ function ViewSetupContent() {
                             value={i}
                             key={i}
                             variant="contained"
-                            sx={{ border:0,  p:1, m:1, fontSize: 25 }}
-                            >
+                            sx={{ border: 0, p: 1, m: 1, fontSize: 25 }}
+                        >
                             {i + 1}
                         </ToggleButton>)
                         // if (i == 0) {
@@ -167,25 +179,55 @@ function ViewSetupContent() {
                             tempCell.push(
                                 <Grid key={"" + cellLevel + "_level_" + i} item >
                                     <Button
+                                        aria-describedby={id}
+                                        onClick={handleClick}
                                         color="success"
                                         size='small'
                                         variant="contained"
                                         fontSize="small"
                                         sx={{ borderRadius: 400, padding: 2.5, m: 1, maxWidth: 0, maxHeight: 0, minWidth: 0, minHeight: 0, fontSize: 1 }}></Button>
+                                    <Popover
+                                        id={id}
+                                        open={openPopup}
+                                        anchorEl={anchorEl}
+                                        onClose={handleClose}
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                        }}
+                                    >
+                                        <Typography sx={{ p: 2 }}>{cellPlantTitle}</Typography>
+                                    </Popover>
                                 </Grid>
                             )
                         } else {
-                                tempCell.push(
-                                    <Grid key={"" + cellLevel + "_level_" + i} item >
-                                        <Button
-                                            color="neutral"
-                                            size='small'
-                                            variant="contained"
-                                            fontSize="small"
-                                            sx={{ borderRadius: 400, padding: 2.5, m: 1, maxWidth: 0, maxHeight: 0, minWidth: 0, minHeight: 0, fontSize: 1 }}></Button>
-                                    </Grid>
-                                )
-                            
+                            tempCell.push(
+                                <Grid key={"" + cellLevel + "_level_" + i} item >
+                                    <Button
+                                        aria-describedby={id}
+                                        onClick={handleClick}
+                                        color="neutral"
+                                        size='small'
+                                        variant="contained"
+                                        fontSize="small"
+                                        sx={{ borderRadius: 400, padding: 2.5, m: 1, maxWidth: 0, maxHeight: 0, minWidth: 0, minHeight: 0, fontSize: 1 }}></Button>
+                                    <Popover
+                                        id={id}
+                                        open={openPopup}
+                                        anchorEl={anchorEl}
+                                        onClose={handleClose}
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                        }}
+                                        elevation={0}
+                                        sx={{}}
+                                    >
+                                        <Typography sx={{ p: 2, border:1 }} >Empty</Typography>
+                                    </Popover>
+                                </Grid>
+                            )
+
                         }
 
 
@@ -195,7 +237,7 @@ function ViewSetupContent() {
                 })
         }
         fetchData()
-    }, [setLevel])
+    }, [setLevel, id, openPopup, anchorEl])
     const [open, setOpen] = useState(false);
     const toggleDrawer = () => {
         setOpen(!open);
@@ -259,7 +301,7 @@ function ViewSetupContent() {
                     <List component="nav">
                         {
                             mainListItems.map((item, index) => {
-                                const { text, icon, to } = item;
+                                const { text, icon } = item;
                                 return (
                                     <ListItemButton component={Link} to={item.to} key={text}>
                                         {icon && <ListItemIcon>{icon}</ListItemIcon>}
@@ -375,7 +417,7 @@ function ViewSetupContent() {
                                                 exclusive
                                                 onChange={handleChange}
                                                 aria-label="Page"
-                                                sx={{m:1}}
+                                                sx={{ m: 1 }}
                                             >
                                                 {pageButtons}
                                             </ToggleButtonGroup>
@@ -389,6 +431,9 @@ function ViewSetupContent() {
                                     </Grid>
                                 </Paper>
 
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button size="large" color='success' variant="contained" onClick={()=>{navigate('/setup/plant/' + setupId)}}>Plant</Button>
                             </Grid>
                         </Grid>
                     </Container>

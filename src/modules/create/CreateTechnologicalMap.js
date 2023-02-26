@@ -102,6 +102,7 @@ function DashboardContent() {
             },
             body: JSON.stringify(data) // body data type must match "Content-Type" header
         })
+        
         navigate('/plants/view/' + plantId)
     };
 
