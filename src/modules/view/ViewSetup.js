@@ -108,18 +108,46 @@ function ViewSetupContent() {
     const [cells, setCells] = useState([])
     const [level, setLevel] = useState(0)
     const [alignment, setAlignment] = React.useState(0);
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorElMap, setAnchorElMap] = React.useState(new Map());
+    const [openPopupMap, setOpenPopupMap] = useState(new Map());
+    const [tempRefresh, setTempRefresh] = useState(false);
+
+
 
     const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
+        let tempRefreshValue = tempRefresh;
+        setTempRefresh(!tempRefreshValue)
+        let stringWithIndex = event.target.id;
+        let splittedArray = stringWithIndex.split("_");
+        let index = splittedArray[1];
+        let tempAnchor = anchorElMap;
+        tempAnchor.set("cell_" + index, event.currentTarget);
+        setAnchorElMap(tempAnchor)
+        let tempPop = openPopupMap;
+        tempPop.set("cell_" + index, true)
+        setOpenPopupMap(tempPop)
     };
 
-    const handleClose = () => {
-        setAnchorEl(null);
+    const handleClose = (event) => {
+        let tempAnchor = anchorElMap;
+        let tempPop = openPopupMap;
+        for (let [key, value] of tempPop) {
+            if (value) {
+                tempPop.set(key, false)
+            }
+        }
+        // for (let j = 0; j < tempPop.keys.length; j++) {
+        //     console.log("ITER")
+        //     tempPop.set("cell_" + j, false);
+        // }
+        setAnchorElMap(tempAnchor)
+        setOpenPopupMap(tempPop)
+        let tempRefreshVal = tempRefresh;
+        setTempRefresh(!tempRefreshVal)
     };
 
-    const openPopup = Boolean(anchorEl);
-    const id = openPopup ? 'simple-popover' : undefined;
+    //const openPopup = Boolean(anchorEl);
+    const id = openPopupMap.get("cell_1") ? 'simple-popover' : undefined;
 
     const handleChange = (event, newAlignment) => {
         setAlignment(newAlignment)
@@ -172,14 +200,26 @@ function ViewSetupContent() {
 
                     }
                     setPageButtons(temp)
+                    // let tempPopupMap = new Map();
+                    // let tempAnchorElMap = new Map();
+                    // for (let i = 0; i < tempObject.cells.length; i++) {
+                    //     tempAnchorElMap.set("cell_" + i, null);
+                    //     tempPopupMap.set("cell_" + i, Boolean(tempAnchorElMap.get("cell_" + i)));
+
+                    // }
+                    // console.log(tempPopupMap)
+                    // setAnchorElMap(tempAnchorElMap)
+                    // setOpenPopupMap(tempPopupMap)
                     for (let i = 0; i < tempObject.cells.length; i++) {
                         let cellPlantTitle = tempObject.cells[i].plantTitle
                         let cellLevel = tempObject.cells[i].level
+                        let techMapTitle = tempObject.cells[i].techMapTitle
                         if (cellPlantTitle) {
                             tempCell.push(
                                 <Grid key={"" + cellLevel + "_level_" + i} item >
                                     <Button
-                                        aria-describedby={id}
+                                        id={"button_" + i}
+                                        aria-describedby={"simple-popover_" + i}
                                         onClick={handleClick}
                                         color="success"
                                         size='small'
@@ -187,34 +227,10 @@ function ViewSetupContent() {
                                         fontSize="small"
                                         sx={{ borderRadius: 400, padding: 2.5, m: 1, maxWidth: 0, maxHeight: 0, minWidth: 0, minHeight: 0, fontSize: 1 }}></Button>
                                     <Popover
-                                        id={id}
-                                        open={openPopup}
-                                        anchorEl={anchorEl}
-                                        onClose={handleClose}
-                                        anchorOrigin={{
-                                            vertical: 'bottom',
-                                            horizontal: 'left',
-                                        }}
-                                    >
-                                        <Typography sx={{ p: 2 }}>{cellPlantTitle}</Typography>
-                                    </Popover>
-                                </Grid>
-                            )
-                        } else {
-                            tempCell.push(
-                                <Grid key={"" + cellLevel + "_level_" + i} item >
-                                    <Button
-                                        aria-describedby={id}
-                                        onClick={handleClick}
-                                        color="neutral"
-                                        size='small'
-                                        variant="contained"
-                                        fontSize="small"
-                                        sx={{ borderRadius: 400, padding: 2.5, m: 1, maxWidth: 0, maxHeight: 0, minWidth: 0, minHeight: 0, fontSize: 1 }}></Button>
-                                    <Popover
-                                        id={id}
-                                        open={openPopup}
-                                        anchorEl={anchorEl}
+                                        id={"simple-popover_" + i}
+                                        open={openPopupMap.get("cell_" + i) === undefined ? false : openPopupMap.get("cell_" + i)}
+                                        // openPopupMap.get("cell_" + i) || (openPopupMap.size === 0 && false)
+                                        anchorEl={anchorElMap.get("cell_" + i)}
                                         onClose={handleClose}
                                         anchorOrigin={{
                                             vertical: 'bottom',
@@ -223,7 +239,35 @@ function ViewSetupContent() {
                                         elevation={0}
                                         sx={{}}
                                     >
-                                        <Typography sx={{ p: 2, border:1 }} >Empty</Typography>
+                                        <Typography sx={{ p: 2 }}>{"Plant: " + cellPlantTitle + "\n" + techMapTitle}</Typography>
+                                    </Popover>
+                                </Grid>
+                            )
+                        } else {
+                            tempCell.push(
+                                <Grid key={"" + cellLevel + "_level_" + i} item >
+                                    <Button
+                                        id={"button_" + i}
+                                        aria-describedby={"simple-popover_" + i}
+                                        onClick={handleClick}
+                                        color="neutral"
+                                        size='small'
+                                        variant="contained"
+                                        fontSize="small"
+                                        sx={{ borderRadius: 400, padding: 2.5, m: 1, maxWidth: 0, maxHeight: 0, minWidth: 0, minHeight: 0, fontSize: 1 }}></Button>
+                                    <Popover
+                                        id={"simple-popover_" + i}
+                                        open={openPopupMap.get("cell_" + i) === undefined ? false : openPopupMap.get("cell_" + i)}
+                                        anchorEl={anchorElMap.get("cell_" + i)}
+                                        onClose={handleClose}
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'left',
+                                        }}
+                                        elevation={0}
+                                        sx={{}}
+                                    >
+                                        <Typography sx={{ p: 2 }} >Empty</Typography>
                                     </Popover>
                                 </Grid>
                             )
@@ -232,12 +276,11 @@ function ViewSetupContent() {
 
 
                     }
-                    console.log(tempCell)
                     setCells(tempCell)
                 })
         }
         fetchData()
-    }, [setLevel, id, openPopup, anchorEl])
+    }, [setLevel, id, tempRefresh])
     const [open, setOpen] = useState(false);
     const toggleDrawer = () => {
         setOpen(!open);
@@ -433,7 +476,7 @@ function ViewSetupContent() {
 
                             </Grid>
                             <Grid item xs={12}>
-                                <Button size="large" color='success' variant="contained" onClick={()=>{navigate('/setup/plant/' + setupId)}}>Plant</Button>
+                                <Button size="large" color='success' variant="contained" onClick={() => { navigate('/setup/plant/' + setupId) }}>Plant</Button>
                             </Grid>
                         </Grid>
                     </Container>

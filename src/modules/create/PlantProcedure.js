@@ -43,6 +43,9 @@ import LabelIcon from '@mui/icons-material/Label';
 import Paper from '@mui/material/Paper';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import { fontWeight } from '@mui/system';
 
 const drawerWidth = 240;
 
@@ -97,7 +100,8 @@ function DashboardContent() {
     const params = useParams();
     const setupId = params.setupId;
 
-    const [openCollapse, setOpenCollapse] = useState(false)
+    const [openCollapse, setOpenCollapse] = useState(new Map())
+    const [tempRefresher, setTempRefresher] = useState(false);
     const [renderObject, setRenderObject] = useState([]);
     const [plantsTitles, setPlantsTitles] = useState([]);
     const [techMaps, setTechMaps] = useState([]);
@@ -105,9 +109,14 @@ function DashboardContent() {
     const [plantTitle, setPlantTitle] = useState('')
     const [selectedValue, setSelectedValue] = React.useState('');
 
-    const handleChange = (event) => {
-        console.log(event.target.value)
-        setSelectedValue(event.target.value);
+
+    const handleOpening = (index) => {
+        let temp = openCollapse;
+        let value = temp.get(index)
+        temp.set(index, !value)
+        setOpenCollapse(temp)
+        let updateValue = tempRefresher
+        setTempRefresher(!updateValue)
     };
 
     const { register, handleSubmit, formState: { errors } } = useForm({
@@ -122,16 +131,19 @@ function DashboardContent() {
 
     const onSubmit = (data) => {
         console.log(data)
-        // fetch(API_URL + "/container/create", {
-        //     method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         'Authorization': sessionStorage.getItem(USER_TOKEN)
-        //         // 'Content-Type': 'application/x-www-form-urlencoded',
-        //     },
-        //     body: JSON.stringify(data) // body data type must match "Content-Type" header
-        // })
-        // navigate('/containers')
+        fetch(API_URL + "/setup/plant/" + setupId, {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': sessionStorage.getItem(USER_TOKEN)
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify(data) // body data type must match "Content-Type" header
+        })
+        .then(()=> {
+            navigate('/setup/view/' + setupId)
+        })
+        
     };
 
     useEffect(() => {
@@ -141,8 +153,9 @@ function DashboardContent() {
                 setRenderObject(result);
                 setPlantsTitles(result.plantsTitles)
                 setTechMaps(result.techMaps)
+
             })
-    }, [setupId, plantTitle, selectedValue])
+    }, [setupId, plantTitle, selectedValue, openCollapse, tempRefresher])
     const [open, setOpen] = useState(false);
     const toggleDrawer = () => {
         setOpen(!open);
@@ -258,7 +271,7 @@ function DashboardContent() {
                                             disablePortal
                                             id="plantTitle"
                                             options={plantsTitles}
-                                            onChange={(e, value) => { setPlantTitle(value); filterRenderingMaps(value) }}
+                                            onChange={(e, value) => { setPlantTitle(value); filterRenderingMaps(value); setOpenCollapse(new Map()) }}
                                             renderInput={(params) =>
                                                 <TextField
                                                     {...params}
@@ -305,20 +318,120 @@ function DashboardContent() {
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <TableContainer component={Paper} sx={{ mt: 3 }}>
-                                            <Table aria-label="collapsible table">
+                                        <FormControl fullWidth>
+                                            <RadioGroup
+                                                aria-labelledby="demo-radio-buttons-group-label"
+                                                name="radio-buttons-group"
+                                            >
+                                                <TableContainer component={Paper} sx={{ mt: 3 }}>
+                                                    <Table aria-label="collapsible table">
 
-                                                <TableBody>
+                                                        <TableBody>
+                                                            {renderingMaps && renderingMaps.map((row, index) => (
+                                                                <React.Fragment key={index}>
+                                                                    {openCollapse.get(row.title) === undefined ? openCollapse.set(row.title, false) : undefined}
+                                                                    <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+                                                                        <TableCell padding='none' align='center' >
+                                                                            <FormControlLabel
+                                                                                value={row.title}
+                                                                                control={<Radio />}
+                                                                                {...register('mapPlantTitle', {
+                                                                                    required: "Tech map is required"
+                                                                                })}
+                                                                                
+                                                                                
+                                                                            />
+                                                                            {/* <Radio
+                                                                            checked={selectedValue === row.title}
+                                                                            onChange={handleChange}
+                                                                            name="radio-button"
+                                                                            value={row.title}
+                                                                            {...register('mapPlantTitle', {
+                                                                                required: "Plant is required"
+                                                                            })}>
 
-                                                    {renderingMaps && renderingMaps.map((row, index) => (
-                                                        <Row key={index} row={row}></Row>
-                                                    ))}
+                                                                        </Radio> */}
+                                                                        </TableCell>
+                                                                        <TableCell >
+                                                                            <IconButton
+                                                                                aria-label="expand row"
+                                                                                size="small"
+                                                                                onClick={() => handleOpening(row.title)}
+                                                                            >
 
+                                                                                {openCollapse.get(row.title) ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
 
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
+                                                                            </IconButton>
+                                                                        </TableCell>
+                                                                        <TableCell component="th" scope="row" align="left">
+                                                                            <Typography component="h2"
+                                                                                variant="h6"
+                                                                                color="inherit"
+                                                                                align="inherit"
+                                                                                style={{ wordWrap: "break-word" }}
+                                                                                sx={{ flexGrow: 1 }}>
+                                                                                {row.title}
+                                                                            </Typography>
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+                                                                            <Collapse in={openCollapse.get(row.title)} timeout="auto" unmountOnExit>
+                                                                                <Box sx={{ margin: 1 }}>
+                                                                                    <Typography variant="h6" gutterBottom component="div">
+                                                                                        Conditions
+                                                                                    </Typography>
+                                                                                    <Table size="small" aria-label="purchases">
+                                                                                        <TableHead>
+                                                                                            <TableRow>
+                                                                                                <TableCell>Min °C</TableCell>
+                                                                                                <TableCell>Max °C</TableCell>
+                                                                                                <TableCell >Min %</TableCell>
+                                                                                                <TableCell >Max %</TableCell>
+                                                                                            </TableRow>
+                                                                                        </TableHead>
+                                                                                        <TableBody>
+                                                                                            <TableRow>
+                                                                                                <TableCell>
+                                                                                                    {row.temperatureMin}
+                                                                                                </TableCell>
+                                                                                                <TableCell>
+                                                                                                    {row.temperatureMax}
+                                                                                                </TableCell>
+                                                                                                <TableCell>
+                                                                                                    {row.humidityMin}
+                                                                                                </TableCell>
+                                                                                                <TableCell>
+                                                                                                    {row.humidityMax}
+                                                                                                </TableCell>
+                                                                                            </TableRow>
 
+                                                                                        </TableBody>
+                                                                                    </Table>
+                                                                                    <List >
+                                                                                        {row.conditions.map((condition, index) => (
+                                                                                            <ListItem key={"condition_" + row.title + "_" + index}>
+                                                                                                <ListItemIcon>
+                                                                                                    <LabelIcon />
+                                                                                                </ListItemIcon>
+                                                                                                <ListItemText>
+                                                                                                    {condition.description}
+                                                                                                </ListItemText>
+                                                                                            </ListItem>
+                                                                                        ))}
+                                                                                    </List>
+                                                                                </Box>
+                                                                            </Collapse>
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                </React.Fragment>
+                                                            ))}
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            </RadioGroup>
+                                            {errors?.mapPlantTitle?.message && <Typography align='left' color="red" sx={{mt:2, fontSize:12}}>{errors?.mapPlantTitle?.message}</Typography>}
+                                        </FormControl>
                                     </Grid>
 
 
@@ -338,103 +451,6 @@ function DashboardContent() {
                 </Box>
             </Box>
         </ThemeProvider>
-    );
-}
-
-function Row(props) {
-    const { row } = props;
-    const [open, setOpen] = React.useState(false);
-
-    return (
-        <React.Fragment>
-            <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-                <TableCell >
-                    <Radio
-                        checked={selectedValue === row.title}
-                        onChange={handleChange}
-                        name="radio-button"
-                        value={row.title}
-                        {...register('mapPlantTitle', {
-                            required: "Plant is required"
-                        })}>
-
-                    </Radio>
-                </TableCell>
-                <TableCell >
-                    <IconButton
-                        aria-label="expand row"
-                        size="small"
-                        onClick={() => setOpen(!open)}
-                    >
-                        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                    </IconButton>
-                </TableCell>
-                <TableCell component="th" scope="row" align="left">
-                    <Typography component="h2"
-                        variant="h6"
-                        color="inherit"
-                        align="inherit"
-                        style={{ wordWrap: "break-word" }}
-                        sx={{ flexGrow: 1 }}>
-                        {row.title}
-                    </Typography>
-                </TableCell>
-                {/* <TableCell align="right">{row.calories}</TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.carbs}</TableCell>
-                <TableCell align="right">{row.protein}</TableCell> */}
-            </TableRow>
-            <TableRow>
-                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                    <Collapse in={open} timeout="auto" unmountOnExit>
-                        <Box sx={{ margin: 1 }}>
-                            <Typography variant="h6" gutterBottom component="div">
-                                Conditions
-                            </Typography>
-                            <Table size="small" aria-label="purchases">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Min °C</TableCell>
-                                        <TableCell>Max °C</TableCell>
-                                        <TableCell >Min %</TableCell>
-                                        <TableCell >Max %</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell>
-                                            {row.temperatureMin}
-                                        </TableCell>
-                                        <TableCell>
-                                            {row.temperatureMax}
-                                        </TableCell>
-                                        <TableCell>
-                                            {row.humidityMin}
-                                        </TableCell>
-                                        <TableCell>
-                                            {row.humidityMax}
-                                        </TableCell>
-                                    </TableRow>
-
-                                </TableBody>
-                            </Table>
-                            <List >
-                                {row.conditions.map((condition, index) => (
-                                    <ListItem key={"condition_" + row.title + "_" + index}>
-                                        <ListItemIcon>
-                                            <LabelIcon />
-                                        </ListItemIcon>
-                                        <ListItemText>
-                                            {condition.description}
-                                        </ListItemText>
-                                    </ListItem>
-                                ))}
-                            </List>
-                        </Box>
-                    </Collapse>
-                </TableCell>
-            </TableRow>
-        </React.Fragment>
     );
 }
 
