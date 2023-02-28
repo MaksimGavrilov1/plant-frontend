@@ -85,6 +85,7 @@ function DashboardContent() {
             .then(res => res.json())
             .then((result) => {
                 setPlants(result);
+                console.log(result)
             }
             )
     }, [])
@@ -193,16 +194,16 @@ function DashboardContent() {
 
                         </Container>
                         <Divider></Divider>
-                    </Container>
-                    <Grid container spacing={0} alignItems="center" justifyContent="space-around">
-                        {plants.map((plant) => (
-                            <Grid item sx={{ align: "center", mt: "30px" }} key={plant.id}>
+                        <Grid container spacing={0} alignItems="center" justifyContent="space-around">
+                        {plants.map((plant, index) => (
+                            <Grid item xs={4} sx={{ align: "center", mt: "30px"}} key={plant.title}>
                                 <Card sx={{ maxWidth: 345 }}>
                                     <CardActionArea onClick={() => { navigate('/plants/view/' + plant.id) }}>
                                         <CardMedia
                                             component="img"
                                             height="140"
-                                            image={LizardImage}
+
+                                            image={plant.picture}
                                             alt="green iguana"
                                         />
                                         <CardContent>
@@ -224,7 +225,9 @@ function DashboardContent() {
                             </Grid>
                         ))}
                     </Grid>
-                    <Grid container spacing={0} alignItems="center" justifyContent="space-around">
+                    </Container>
+                    
+                    {/* <Grid container spacing={0} alignItems="center" justifyContent="space-around">
 
                         <Grid item sx={{ mt: "20px" }}>
                             <Card sx={{ maxWidth: 345 }}>
@@ -330,7 +333,7 @@ function DashboardContent() {
                                 </CardActions>
                             </Card>
                         </Grid>
-                    </Grid>
+                    </Grid> */}
                 </Box>
             </Box>
         </ThemeProvider>

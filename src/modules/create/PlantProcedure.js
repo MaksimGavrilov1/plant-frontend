@@ -46,6 +46,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import { fontWeight } from '@mui/system';
+import LocalFloristIcon from '@mui/icons-material/LocalFlorist';
 
 const drawerWidth = 240;
 
@@ -254,7 +255,7 @@ function DashboardContent() {
                             }}
                         >
                             <Avatar sx={{ m: 1, bgcolor: 'green' }}>
-
+                                <LocalFloristIcon></LocalFloristIcon>
                             </Avatar>
                             <Typography component="h1" variant="h5">
                                 Plant a culture
@@ -440,7 +441,7 @@ function DashboardContent() {
                                     type="submit"
                                     fullWidth
                                     variant="contained"
-
+                                    color="success"
                                     sx={{ mt: 3, mb: 2 }}
                                 >
                                     Create

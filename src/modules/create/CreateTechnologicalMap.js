@@ -29,6 +29,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 
 const drawerWidth = 240;
 
@@ -215,7 +216,7 @@ function DashboardContent() {
                             }}
                         >
                             <Avatar sx={{ m: 1, bgcolor: 'green' }}>
-                                <WarehouseIcon />
+                                <SettingsApplicationsIcon />
                             </Avatar>
                             <Typography component="h1" variant="h5">
                                 Create technological map
@@ -262,6 +263,10 @@ function DashboardContent() {
                                                     min: {
                                                         value: 10,
                                                         message: 'Min value is 10'
+                                                    },
+                                                    maxLength: {
+                                                        value:4,
+                                                        message: 'Only within a tenth value'
                                                     }
                                                 })}
                                                 error={errors?.temperatureMin ? true : false}
@@ -293,6 +298,10 @@ function DashboardContent() {
                                                     min: {
                                                         value: 10,
                                                         message: 'Min value is 10'
+                                                    },
+                                                    maxLength: {
+                                                        value:4,
+                                                        message: 'Only within a tenth value'
                                                     }
                                                 })}
                                                 error={errors?.temperatureMax ? true : false}
@@ -320,6 +329,10 @@ function DashboardContent() {
                                                     min: {
                                                         value: 0,
                                                         message: 'Min value is 0'
+                                                    },
+                                                    maxLength: {
+                                                        value:4,
+                                                        message: 'Only within a tenth value'
                                                     }
                                                 })}
                                                 error={errors?.humidityMin ? true : false}
@@ -347,6 +360,10 @@ function DashboardContent() {
                                                     min: {
                                                         value: 0,
                                                         message: 'Min value is 0'
+                                                    },
+                                                    maxLength: {
+                                                        value:4,
+                                                        message: 'Only within a tenth value'
                                                     }
                                                 })}
                                                 error={errors?.humidityMax ? true : false}

@@ -28,6 +28,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import GrassIcon from '@mui/icons-material/Grass';
 
 const drawerWidth = 240;
 
@@ -233,7 +234,7 @@ function DashboardContent() {
                             }}
                         >
                             <Avatar sx={{ m: 1, bgcolor: 'green' }}>
-                                <WarehouseIcon />
+                                <GrassIcon />
                             </Avatar>
                             <Typography component="h1" variant="h5">
                                 Create plant
@@ -280,17 +281,18 @@ function DashboardContent() {
                                                 {...register('picture')}
                                                 onChange={(e) => setSelectedImage(e.target.files[0])}
                                             />
+                                            {imageUrl && selectedImage && (
+                                                <Box sx={{mb:4, p:0}} textAlign="center">
+                                                    <Typography sx={{mb:1}} component="h4" variant='h6' >Preview:</Typography>
+                                                    <img src={imageUrl} alt={selectedImage.name} height="150px" />
+                                                </Box>
+                                            )}
                                             <label htmlFor="picture">
-                                                <Button variant="contained" color="primary" component="span">
+                                                <Button variant="contained" size="small" color="secondary" component="span">
                                                     Upload Image
                                                 </Button>
                                             </label>
-                                            {imageUrl && selectedImage && (
-                                                <Box mt={2} textAlign="center">
-                                                    <div>Image Preview:</div>
-                                                    <img src={imageUrl} alt={selectedImage.name} height="100px" />
-                                                </Box>
-                                            )}
+                                            
                                         </>
                                     </Grid>
 
@@ -299,7 +301,7 @@ function DashboardContent() {
                                     type="submit"
                                     fullWidth
                                     variant="contained"
-
+                                    color="success"
                                     sx={{ mt: 3, mb: 2 }}
                                 >
                                     Create

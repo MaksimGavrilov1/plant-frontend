@@ -23,7 +23,11 @@ export default function RegisterForm() {
         mode: "all"
       });
     const navigate = useNavigate();
+    const [usernameExists, setUsernameExists] = React.useState(false)
 
+    React.useEffect(() => {
+        
+    }, [usernameExists])
     function handleClick() {
         navigate("/login");
       }
@@ -39,8 +43,23 @@ export default function RegisterForm() {
         },
         body: JSON.stringify(data) // body data type must match "Content-Type" header
     })
+    .then((result)=>{
+      if (result.status === 400) {
+        let userBool = usernameExists
+        setUsernameExists(true)
+      } else if (result.status === 200) {
+        navigate("/login")
+      }
+     
+      
+    })
+    .catch(()=>{
+      
+    })
+    
   };
 
+  
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -53,8 +72,8 @@ export default function RegisterForm() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
+          <Avatar sx={{ m: 1, bgcolor: 'success.main' }}>
+            
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign up
@@ -146,7 +165,7 @@ export default function RegisterForm() {
                     noWhiteSpace: v=> !v.trim().includes(' ') || 'Username should not contain whitespace'
                   }  })}
                   error={errors?.username ? true: false}
-                  helperText={errors?.username?.message}
+                  helperText={errors?.username?.message || (usernameExists && <Typography sx={{fontSize:13, p:0, m:0}} class="Mui-error" color="#d32f2f">Username already exists</Typography>)}
                    
                 />
               </Grid>
@@ -198,20 +217,21 @@ export default function RegisterForm() {
               type="submit"
               fullWidth
               variant="contained"
-
+              color="success"
               sx={{ mt: 3, mb: 2 }}
             >
               Sign Up
             </Button>
-            <Grid container justifyContent="flex-end">
+            
+          </Box>
+        </Box>
+        <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link onClick={handleClick} variant="body2">
+                <Link href="#" onClick={handleClick} underline="none"  sx={{color:'green'}} >
                   Already have an account? Sign in
                 </Link>
               </Grid>
             </Grid>
-          </Box>
-        </Box>
       </Container>
     </ThemeProvider>
   );

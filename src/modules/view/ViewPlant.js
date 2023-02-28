@@ -182,6 +182,7 @@ function DashboardContent() {
             .then(res => res.json())
             .then((result) => {
                 setPlantItem(result);
+                console.log(result)
             }
             )
     }, [plantId])
@@ -284,7 +285,7 @@ function DashboardContent() {
                                             maxWidth: { xs: 370, md: 400 },
                                         }}
                                         alt="The house from the offer."
-                                        src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"
+                                        src={plantItem.picture}
                                     />
                                 </Paper>
                             </Grid>

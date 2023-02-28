@@ -10,17 +10,19 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import { useNavigate } from 'react-router-dom';
+import GrassIcon from '@mui/icons-material/Grass';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
 
 
 export const mainListItems = [
   {
     text: "Containers",
-    icon: <DashboardIcon />,
+    icon: <WarehouseIcon />,
     to: "/containers" // <-- add link targets
   },
   {
     text: "Plants",
-    icon: <PeopleIcon />,
+    icon: <GrassIcon />,
     to: "/plants" // <-- add link targets
   },
   {
