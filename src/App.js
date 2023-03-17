@@ -20,6 +20,9 @@ import NewLoginComponent from './component/NewLoginComponent'
 import CreateHydroponicSetup from './modules/create/CreateHydroponicSetup';
 import ViewSetupComponent from './component/ViewSetupComponent';
 import PlantProcedureComponent from './component/PlantProcedureComponent';
+import DevicesComponent from './component/DevicesComponent';
+import CreateDeviceComponent from './component/CreateDevice';
+import TasksComponent from './component/TasksComponent';
 
 function App() {
   return (
@@ -70,6 +73,15 @@ function App() {
           </Route>
           <Route exact path='/setup/plant/:setupId' element={<AuthenticatedRoute/>}>
             <Route exact path='/setup/plant/:setupId' element={<PlantProcedureComponent/>}/>
+          </Route>
+          <Route exact path='/devices/all' element={<AuthenticatedRoute/>}>
+            <Route exact path='/devices/all' element={<DevicesComponent/>}/>
+          </Route>
+          <Route exact path='/devices/create' element={<AuthenticatedRoute/>}>
+            <Route exact path='/devices/create' element={<CreateDeviceComponent/>}/>
+          </Route>
+          <Route exact path='/tasks' element={<AuthenticatedRoute/>}>
+            <Route exact path='/tasks' element={<TasksComponent/>}/>
           </Route>
           <Route path='/register' element={<RegisterComponent />}></Route>
           {/* If any route mismatches the upper

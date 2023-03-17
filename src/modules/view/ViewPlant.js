@@ -130,6 +130,7 @@ function Row(props) {
                                         <TableCell>Max °C</TableCell>
                                         <TableCell >Min %</TableCell>
                                         <TableCell >Max %</TableCell>
+                                        <TableCell >Growth Period</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -145,6 +146,9 @@ function Row(props) {
                                         </TableCell>
                                         <TableCell>
                                             {row.humidityMax}
+                                        </TableCell>
+                                        <TableCell>
+                                            {row.growthPeriod}
                                         </TableCell>
                                     </TableRow>
 
