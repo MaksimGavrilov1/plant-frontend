@@ -22,14 +22,18 @@ const theme = createTheme();
 export default function NewLoginComponent() {
   const navigate = useNavigate();
 
-  const { register, handleSubmit, formState: { errors }, watch } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     mode: "all"
   });
 
   const [failedLogin, setFailedLogin] = useState(false);
+  const [image, setImage] = useState()
+
+  React.useEffect(() => {
+    setImage(RandomImage())
+  }, [])
 
   const onSubmit = (data) => {
-    console.log(data)
     AuthenticationService
       .executeBasicAuthenticationService(data.username, data.password)
       .then(() => {
@@ -40,7 +44,7 @@ export default function NewLoginComponent() {
       })
 
   };
-  
+
   return (
     <ThemeProvider theme={theme}>
       <Grid container component="main" sx={{ height: '100vh' }}>
@@ -51,7 +55,7 @@ export default function NewLoginComponent() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: `url(${RandomImage()})`
+            backgroundImage: `url(${image})`
             ,
             backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
@@ -103,20 +107,20 @@ export default function NewLoginComponent() {
                   required: "Password is required"
                 })}
                 error={errors?.title ? true : false}
-                helperText={errors?.title?.message || (failedLogin && <p style={{color:'red'}}>Wrong login or password</p>)}
+                helperText={errors?.title?.message || (failedLogin && <p style={{ color: 'red' }}>Wrong login or password</p>)}
               />
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 color='success'
-                sx={{ mt: 3, mb: 2}}
+                sx={{ mt: 3, mb: 2 }}
               >
                 Sign In
               </Button>
               <Grid container>
                 <Grid item>
-                  <Link href="/register" underline='none' sx={{color:'green'}}>
+                  <Link href="/register" underline='none' sx={{ color: 'green' }}>
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>

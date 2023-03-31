@@ -12,6 +12,5 @@ export default function RandomImage() {
 
     let imgArray = [Image1, Image2, Image3, Image4, Image5, Image6, Image7, Image8, Image9]
     let temp = Math.floor(Math.random() * (8 - 0 + 1) + 0)
-    console.log(temp)
     return imgArray[temp]
 }

@@ -31,8 +31,23 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import secureGetFetch from '../../service/CustomFetch';
 import { USER_TOKEN, API_URL } from '../../service/AuthenticationService';
+import Modal from '@mui/material/Modal';
 
 const drawerWidth = 240;
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    pt: 2,
+    px: 4,
+    pb: 3,
+};
 
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
@@ -85,6 +100,33 @@ function DashboardContent() {
     const navigate = useNavigate();
     const [tasks, setTasks] = useState([]);
     const [flag, setFlag] = useState(false)
+    const [openModal, setOpenModal] = React.useState(false);
+    const [openMap, setOpenMap] = useState(new Map())
+
+    const handleOpen = (taskId) => {
+
+        if (openMap.get(taskId) === undefined) {
+            openMap.set(taskId, true)
+        } else {
+            openMap.set(taskId, true)
+        }
+        var temp = openModal
+        setOpenModal(!temp)
+    };
+    const handleClose = (taskId) => {
+        openMap.set(taskId, false)
+        setOpenModal(false);
+    };
+
+    const initOpen = (taskId) => {
+        console.log(openMap)
+        if (openMap.get(taskId) === undefined) {
+            openMap.set(taskId, false)
+            return true;
+        } else {
+            return openMap.get(taskId)
+        }
+    }
 
     useEffect(() => {
         secureGetFetch("http://localhost:8080/tasks/all")
@@ -93,7 +135,9 @@ function DashboardContent() {
                 setTasks(result);
 
             })
-    }, [flag])
+
+    }, [flag, openModal])
+
     const deleteTask = (taskId) => {
         fetch(API_URL + "/task/delete", {
             method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
@@ -104,12 +148,9 @@ function DashboardContent() {
             },
             body: JSON.stringify(taskId) // body data type must match "Content-Type" header
         })
-        const flagVal = flag
-        setFlag(true)
+        setOpenModal(false)
     }
-    const tempFixed = (taskId) => {
-        
-    }
+
     const [open, setOpen] = useState(false);
     const toggleDrawer = () => {
         setOpen(!open);
@@ -229,12 +270,36 @@ function DashboardContent() {
                                                 <TableCell sx={{ fontSize: '15pt' }} align="center">{task.harvestUUID}</TableCell>
                                                 <TableCell sx={{ fontSize: '15pt' }} align="center">{task.status}</TableCell>
                                                 <TableCell sx={{ fontSize: '15pt' }} align="right">
-                                                    <Button onClick={task.status === "HARVEST_DONE" ? ()=>deleteTask(task.id) : ()=>tempFixed(task.id)}
+                                                    {/* onClick={task.status === "HARVEST_DONE" ? () => deleteTask(task.id) : () => tempFixed(task.id)} */}
+                                                    <Button
+                                                        onClick={() => handleOpen(task.id)}
                                                         variant='contained'
                                                         disabled={task.status === "IN_PROGRESS"}
                                                         color={task.status === "HARVEST_DONE" ? "success" : "warning"}>
                                                         Check
-                                                    </Button></TableCell>
+                                                    </Button>
+                                                    <Modal
+                                                        open={initOpen(task.id)}
+                                                        onClose={() => handleClose(task.id)}
+                                                        aria-labelledby={task.id}
+                                                        aria-describedby={task.id + "descr"}
+                                                    >
+                                                        <Box sx={{ ...style, width: "50%" }}>
+                                                            {task.status === "HARVEST_DONE" ? <h2 id={task.id}>Submit harvesting</h2> : <h2 id={task.id}>Control warning</h2>}
+
+                                                            <p id={task.id + "descr"}>
+                                                                {task.status === "HARVEST_DONE" ? "Press 'Agree' if you want to submit harvesting. Control task and harvest task will be deleted for this harvest UUID" : "VIOLATIONS message shows that there are some problems with temp or humidity. Check task title"}
+                                                            </p>
+                                                            <Grid container maxWidth="lg" spacing={3}>
+                                                                <Grid item>
+                                                                    {task.status === "HARVEST_DONE" && <Button variant='contained' color="success" onClick={() => deleteTask(task.id)}>Agree</Button>}
+                                                                </Grid>
+                                                                <Grid item>
+                                                                    <Button variant='contained' color="error" onClick={() => handleClose(task.id)}>Close</Button>
+                                                                </Grid>
+                                                            </Grid>
+                                                        </Box>
+                                                    </Modal></TableCell>
                                                 {/* <TableCell><Button sx={{ color: "green" }} onClick={() => { navigate('/setup/view/' + setup.id) }} size="large">Check</Button></TableCell> */}
                                             </TableRow>
                                         ))}
@@ -247,10 +312,10 @@ function DashboardContent() {
                     </Container>
                 </Box>
             </Box>
-        </ThemeProvider>
+        </ThemeProvider >
     );
 }
 
-export default function Dashboard() {
+export default function Tasks() {
     return <DashboardContent />;
 }

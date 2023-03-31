@@ -7,6 +7,7 @@ import GrassIcon from '@mui/icons-material/Grass';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 
 
 export const mainListItems = [
@@ -29,6 +30,11 @@ export const mainListItems = [
     text: "Tasks",
     icon: <AssignmentIcon/>,
     to: "/tasks"
+  },
+  {
+    text: "History",
+    icon: <HistoryEduIcon/>,
+    to: "/history"
   }
   
 ]

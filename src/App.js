@@ -23,6 +23,7 @@ import PlantProcedureComponent from './component/PlantProcedureComponent';
 import DevicesComponent from './component/DevicesComponent';
 import CreateDeviceComponent from './component/CreateDevice';
 import TasksComponent from './component/TasksComponent';
+import HistoryComponent from './component/HistoryComponent';
 
 function App() {
   return (
@@ -82,6 +83,9 @@ function App() {
           </Route>
           <Route exact path='/tasks' element={<AuthenticatedRoute/>}>
             <Route exact path='/tasks' element={<TasksComponent/>}/>
+          </Route>
+          <Route exact path='/history' element={<AuthenticatedRoute/>}>
+            <Route exact path='/history' element={<HistoryComponent/>}/>
           </Route>
           <Route path='/register' element={<RegisterComponent />}></Route>
           {/* If any route mismatches the upper

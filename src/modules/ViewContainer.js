@@ -33,6 +33,17 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import {
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer
+} from 'recharts';
+
 
 
 const drawerWidth = 240;
@@ -81,6 +92,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     }),
 );
 
+
+
 const mdTheme = createTheme();
 
 function ContainerDashboard() {
@@ -88,6 +101,9 @@ function ContainerDashboard() {
     const containerId = params.containerId;
     const navigate = useNavigate();
     const [containerItem, setContainerItem] = useState({});
+    const [data, setData] = useState([])
+    const [constantData, setConstantData] = useState();
+    const [flag, setFlag] = useState(false)
     let isLoaded = false;
     useEffect(() => {
 
@@ -97,12 +113,30 @@ function ContainerDashboard() {
                 setContainerItem(result);
             }
             )
+        secureGetFetch("http://localhost:8080/device/data/" + containerId)
+            .then(res => res.json())
+            .then((result) => {
+                
+                result.forEach(element => {
+                    var date = new Date(element.time)
+                    element.time = date
+                    //date.customFormat("#DD#/#MM# #hh#:#mm#:#ss#")
+                });
+                setData(result);
+                var temp = (result.filter((element) =>  element.status === "CONSTANT" ? true : false))[0]
+                setConstantData(temp)
+                
+            }
+            )
         isLoaded = true
+
     }, [])
     const [open, setOpen] = useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
     };
+
+
 
     return (
         <ThemeProvider theme={mdTheme}>
@@ -222,6 +256,27 @@ function ContainerDashboard() {
                                         height: 300,
                                     }}
                                 >
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <LineChart
+                                            data={data}
+                                            width={300}
+                                            height={250}
+                                        >
+                                            <CartesianGrid />
+                                            <XAxis dataKey="time" />
+                                            <YAxis />
+                                            <Tooltip />
+                                            <Legend />
+                                            <Line
+                                                type="monotone"
+                                                dataKey="temperature"
+                                                stroke="#FF0000"
+                                                activeDot={true}
+                                            />
+                                            <Line type="monotone" dataKey="humidity" stroke="#4169E1" />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} md={4} lg={4}>
@@ -245,7 +300,7 @@ function ContainerDashboard() {
                                                 color="inherit"
                                                 align='left'
                                                 sx={{ flexGrow: 1 }}>
-                                                22.7°
+                                                {constantData && constantData.temperature}°
                                             </Typography>
                                         </Grid>
 
@@ -262,7 +317,7 @@ function ContainerDashboard() {
                                                 color="inherit"
                                                 align='left'
                                                 sx={{ flexGrow: 1 }}>
-                                                22.5%
+                                                {constantData && constantData.humidity }%
                                             </Typography>
                                         </Grid>
 
@@ -303,7 +358,7 @@ function ContainerDashboard() {
                                                         return self.findIndex(v => v.level === value.level) === index;
                                                     }).length}</TableCell>
                                                     <TableCell sx={{ fontSize: '15pt' }} align="center">{setup.levels.filter((value) => !value.plant).length}</TableCell>
-                                                    <TableCell><Button sx={{ color: "green" }} onClick={() => { navigate('/setup/view/' + setup.id) }} size="large">Check</Button></TableCell>                                                    
+                                                    <TableCell><Button sx={{ color: "green" }} onClick={() => { navigate('/setup/view/' + setup.id) }} size="large">Check</Button></TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
@@ -312,14 +367,14 @@ function ContainerDashboard() {
 
                             </Grid>
                             <Grid item xs={12}>
-                            <Button 
-                             sx={{  mt: 3, width:"20%" }}
-                             variant="contained"
-                             color="success"
-                             size='large'
-                             onClick={()=>{navigate('/setup/create/' + containerId)}}
-                            >Create setup</Button>
-                        </Grid>
+                                <Button
+                                    sx={{ mt: 3, width: "20%" }}
+                                    variant="contained"
+                                    color="success"
+                                    size='large'
+                                    onClick={() => { navigate('/setup/create/' + containerId) }}
+                                >Create setup</Button>
+                            </Grid>
                         </Grid>
                     </Container>
                 </Box>
