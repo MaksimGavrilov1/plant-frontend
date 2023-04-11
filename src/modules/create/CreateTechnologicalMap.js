@@ -153,7 +153,7 @@ function DashboardContent() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            Technological maps
+                            Технологические карты
                         </Typography>
                         <IconButton color="inherit">
                             <Badge badgeContent={4} color="secondary">
@@ -219,7 +219,7 @@ function DashboardContent() {
                                 <SettingsApplicationsIcon />
                             </Avatar>
                             <Typography component="h1" variant="h5">
-                                Create technological map
+                                Создание технологической карты
                             </Typography>
                             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
                                 <Grid container spacing={5}
@@ -230,12 +230,12 @@ function DashboardContent() {
                                                 required
 
                                                 id="title"
-                                                label="Title"
+                                                label="Название"
                                                 name="title"
 
                                                 autoComplete="title"
                                                 {...register('title', {
-                                                    required: "Title is required"
+                                                    required: "Название обязательно"
                                                 })}
                                                 error={errors?.title ? true : false}
                                                 helperText={errors?.title?.message}
@@ -248,17 +248,17 @@ function DashboardContent() {
                                                 required
                                                 type="number"
                                                 id="temperatureMin"
-                                                label="Min Temperature"
+                                                label="Мин. температура"
                                                 name="temperatureMin"
                                                 inputProps={{
                                                     maxLength: 13,
                                                     step: "0.1"
                                                 }}
                                                 {...register('temperatureMin', {
-                                                    required: "Field is required",
+                                                    required: "Это поле обязательно",
                                                     max: {
                                                         value: 40,
-                                                        message: 'Max value is 40'
+                                                        message: 'Макс. допустимое значение: 40'
                                                     },
                                                     min: {
                                                         value: 10,
@@ -280,7 +280,7 @@ function DashboardContent() {
                                                 required
                                                 type="number"
                                                 id="temperatureMax"
-                                                label="Max Temperature"
+                                                label="Макс. температура"
                                                 name="temperatureMax"
                                                 min="0"
                                                 max="100"
@@ -290,10 +290,10 @@ function DashboardContent() {
 
                                                 }}
                                                 {...register('temperatureMax', {
-                                                    required: "Field is required",
+                                                    required: "Это поле обязательноd",
                                                     max: {
                                                         value: 40,
-                                                        message: 'Max value is 40'
+                                                        message: 'Макс. допустимое значение: 40'
                                                     },
                                                     min: {
                                                         value: 10,
@@ -314,17 +314,17 @@ function DashboardContent() {
                                                 required
                                                 type="number"
                                                 id="humidityMin"
-                                                label="Min Humidity"
+                                                label="Мин. влажность"
                                                 name="humidityMin"
                                                 inputProps={{
                                                     maxLength: 13,
                                                     step: "0.1"
                                                 }}
                                                 {...register('humidityMin', {
-                                                    required: "Field is required",
+                                                    required: "Это поле обязательно",
                                                     max: {
                                                         value: 100,
-                                                        message: 'Max value is 100'
+                                                        message: 'Макс. допустимое значение: 100'
                                                     },
                                                     min: {
                                                         value: 0,
@@ -345,17 +345,17 @@ function DashboardContent() {
                                                 required
                                                 type="number"
                                                 id="humidityMax"
-                                                label="Max Humidity"
+                                                label="Макс. влажность"
                                                 name="humidityMax"
                                                 inputProps={{
                                                     maxLength: 13,
                                                     step: "0.1"
                                                 }}
                                                 {...register('humidityMax', {
-                                                    required: "Field is required",
+                                                    required: "Это поле обязательно",
                                                     max: {
                                                         value: 100,
-                                                        message: 'Max value is 100'
+                                                        message: 'Макс. допустимое значение: 100'
                                                     },
                                                     min: {
                                                         value: 0,
@@ -376,21 +376,21 @@ function DashboardContent() {
 
                                                 type="number"
                                                 id="growthPeriod"
-                                                label="Growth Period"
+                                                label="Период роста"
                                                 name="growthPeriod"
                                                 inputProps={{
                                                     maxLength: 100,
                                                     step: "1"
                                                 }}
                                                 {...register('growthPeriod', {
-                                                    required: "Field is required",
+                                                    required: "Это поле обязательно",
                                                     pattern: {
                                                         value: /^\d+$/,
                                                         message: 'Only integer values'
                                                     },
                                                     max: {
                                                         value: 999,
-                                                        message: 'Max value is 999'
+                                                        message: 'Макс. допустимое значение: 999'
                                                     },
                                                     min: {
                                                         value: 1.0,
@@ -405,7 +405,7 @@ function DashboardContent() {
                                     </Grid>
                                     <Grid item xs={12} sx={{ padding: 0 }}>
                                         <Typography component="h3" variant="h5" align='left'>
-                                            Conditions
+                                            Дополнительные условия
                                         </Typography>
                                         <Divider></Divider>
                                     </Grid>
@@ -419,12 +419,12 @@ function DashboardContent() {
                                                             required
                                                             fullWidth
                                                             id="description"
-                                                            label="Condition description"
+                                                            label="Описание условия"
                                                             name="description"
 
                                                             autoComplete="description"
                                                             {...register(`conditions.${index}.description`, {
-                                                                required: "description is required"
+                                                                required: "Описание обязательно"
                                                             })}
                                                         // error={errors?.description ? true : false}
                                                         // helperText={errors?.description?.message}
@@ -440,7 +440,7 @@ function DashboardContent() {
                                                             color='error'
                                                             onClick={() => remove(index)}
                                                         >
-                                                            Delete
+                                                            Удалить
                                                         </Button>
                                                     </Grid>
                                                 </Grid>
@@ -458,7 +458,7 @@ function DashboardContent() {
                                             }}
 
                                         >
-                                            Add condition
+                                            Добавить условие
                                         </Button>
                                     </Grid>
                                 </Grid>
@@ -470,7 +470,7 @@ function DashboardContent() {
 
                                     sx={{ mt: 3, mb: 2 }}
                                 >
-                                    Create Map
+                                    Создать тех. карту
                                 </Button>
                             </Box>
                         </Box>

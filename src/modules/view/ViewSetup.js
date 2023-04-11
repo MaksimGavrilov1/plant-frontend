@@ -239,7 +239,8 @@ function ViewSetupContent() {
                                         elevation={0}
                                         sx={{}}
                                     >
-                                        <Typography sx={{ p: 2 }}>{"Plant: " + cellPlantTitle + "\n" + techMapTitle}</Typography>
+                                        <Typography sx={{ p: 2 }}>{"Растение: " + cellPlantTitle  }</Typography>
+                                        <Typography sx={{ p: 2, m:0 }}>{" \nТех. карта: " + techMapTitle}</Typography>
                                     </Popover>
                                 </Grid>
                             )
@@ -318,7 +319,7 @@ function ViewSetupContent() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            Hydroponic Setup
+                            Установка
                         </Typography>
                         <IconButton color="inherit">
                             <Badge badgeContent={4} color="secondary">
@@ -380,7 +381,7 @@ function ViewSetupContent() {
                                         align='left'
                                         noWrap
                                         sx={{ flexGrow: 1 }}>
-                                        Address:  {setupItem.address}
+                                        Название:  {setupItem.address}
                                     </Typography>
                                     <Grid container spacing={3} sx={{ mt: 2 }}>
                                         <Grid item xs={4}>
@@ -390,7 +391,7 @@ function ViewSetupContent() {
                                                 align='left'
                                                 noWrap
                                                 sx={{ flexGrow: 1 }}>
-                                                Cells amount:  {setupItem.freeCells + setupItem.occupiedCells}
+                                                Количество ячеек:  {setupItem.freeCells + setupItem.occupiedCells}
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={4}>
@@ -400,7 +401,7 @@ function ViewSetupContent() {
                                                 align='left'
                                                 noWrap
                                                 sx={{ flexGrow: 1 }}>
-                                                Free cells amount:  {setupItem.freeCells}
+                                                Свободно ячеек:  {setupItem.freeCells}
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={4}>
@@ -410,7 +411,7 @@ function ViewSetupContent() {
                                                 align='left'
                                                 noWrap
                                                 sx={{ flexGrow: 1 }}>
-                                                Occupied cells amount:  {setupItem.occupiedCells}
+                                                Занято ячеек:  {setupItem.occupiedCells}
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={12}>
@@ -420,7 +421,7 @@ function ViewSetupContent() {
                                                 align='left'
                                                 noWrap
                                                 sx={{ flexGrow: 1 }}>
-                                                Plants on setup:
+                                                Виды растений в установке:
                                             </Typography>
                                         </Grid>
                                         <Grid item xs={12}>
@@ -449,7 +450,7 @@ function ViewSetupContent() {
                                         align='left'
                                         noWrap
                                         sx={{ flexGrow: 1 }}>
-                                        Space info
+                                        Информация о ячейках
                                     </Typography>
                                     <Divider></Divider>
                                     <Grid container spacing={4} sx={{ flexGrow: 1 }}>
@@ -476,7 +477,7 @@ function ViewSetupContent() {
 
                             </Grid>
                             <Grid item xs={12}>
-                                <Button size="large" color='success' variant="contained" onClick={() => { navigate('/setup/plant/' + setupId) }}>Plant</Button>
+                                <Button size="large" color='success' variant="contained" onClick={() => { navigate('/setup/plant/' + setupId) }}>Посадить</Button>
                             </Grid>
                         </Grid>
                     </Container>

@@ -137,7 +137,7 @@ function CreateHydroponicSetupView() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            Hydroponic Setup
+                            Гидропонная установка
                         </Typography>
                         <IconButton color="inherit">
                             <Badge badgeContent={4} color="secondary">
@@ -203,7 +203,7 @@ function CreateHydroponicSetupView() {
                                 <WarehouseIcon />
                             </Avatar>
                             <Typography component="h1" variant="h5">
-                                Create hydroponic setup
+                                Создание гидропонной установки
                             </Typography>
                             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
                                 <Grid container spacing={5}>
@@ -212,7 +212,7 @@ function CreateHydroponicSetupView() {
                                             required
                                             fullWidth
                                             id="address"
-                                            label="Address"
+                                            label="Название"
                                             name="address"
 
                                             autoComplete="address"
@@ -228,7 +228,7 @@ function CreateHydroponicSetupView() {
                                             required
                                             type="number"
                                             id="levelsAmount"
-                                            label="Levels amount"
+                                            label="Количество уровней"
                                             name="levelsAmount"
                                             inputProps={{
                                                 maxLength: 100,
@@ -259,7 +259,7 @@ function CreateHydroponicSetupView() {
                                             required
                                             type="number"
                                             id="cellsAmount"
-                                            label="Cells Amount"
+                                            label="Количество ячеек"
                                             name="cellsAmount"
                                             inputProps={{
                                                 maxLength: 100,
@@ -282,7 +282,7 @@ function CreateHydroponicSetupView() {
 
                                             })}
                                             error={errors?.cellsAmount ? true : false}
-                                            helperText={errors?.cellsAmount?.message || (!errors?.cellsAmount?.message && "Amount of cells per level")}
+                                            helperText={errors?.cellsAmount?.message || (!errors?.cellsAmount?.message && "Количество ячеек на один уровень")}
                                         />
                                     </Grid>
 
@@ -296,7 +296,7 @@ function CreateHydroponicSetupView() {
 
                                     sx={{ mt: 3, mb: 2 }}
                                 >
-                                    Create
+                                    Создать
                                 </Button>
                             </Box>
                         </Box>

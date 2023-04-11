@@ -85,6 +85,7 @@ function CreateHydroponicSetupView() {
     });
 
     const onSubmit = (data) => {
+        console.log(data)
         fetch(API_URL + "/device/add", {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             headers: {

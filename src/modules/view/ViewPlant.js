@@ -35,6 +35,7 @@ import secureGetFetch from '../../service/CustomFetch';
 import ListItem from '@mui/material/ListItem';
 import LabelIcon from '@mui/icons-material/Label';
 import { Button } from '@mui/material';
+import { Image } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -121,16 +122,16 @@ function Row(props) {
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box sx={{ margin: 1 }}>
                             <Typography variant="h6" gutterBottom component="div">
-                                Conditions
+                                Условия
                             </Typography>
                             <Table size="small" aria-label="purchases">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>Min °C</TableCell>
-                                        <TableCell>Max °C</TableCell>
-                                        <TableCell >Min %</TableCell>
-                                        <TableCell >Max %</TableCell>
-                                        <TableCell >Growth Period</TableCell>
+                                        <TableCell>Мин °C</TableCell>
+                                        <TableCell>Макс °C</TableCell>
+                                        <TableCell >Мин %</TableCell>
+                                        <TableCell >Макс %</TableCell>
+                                        <TableCell >Период роста</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -190,7 +191,7 @@ function DashboardContent() {
             }
             )
     }, [plantId])
-    const [open, setOpen] = useState(true);
+    const [open, setOpen] = useState(false);
     const toggleDrawer = () => {
         setOpen(!open);
     };
@@ -224,7 +225,7 @@ function DashboardContent() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            Plants
+                            Растения
                         </Typography>
                         <IconButton color="inherit">
                             <Badge badgeContent={4} color="secondary">
@@ -283,12 +284,14 @@ function DashboardContent() {
                                     <Box
                                         component="img"
                                         sx={{
-                                            height: 400,
-                                            width: 370,
-                                            maxHeight: { xs: 370, md: 400 },
-                                            maxWidth: { xs: 370, md: 400 },
+                                            height: "auto",
+                                            width: "auto",
+                                            maxHeight: 400,
+                                            maxWidth: 370,
+                                            // maxHeight: { xs: 370, md: 400 },
+                                            // maxWidth: { xs: 370, md: 400 },
                                         }}
-                                        alt="The house from the offer."
+                                        alt="Изображение растения."
                                         src={plantItem.picture}
                                     />
                                 </Paper>
@@ -301,7 +304,7 @@ function DashboardContent() {
                                         align='left'
                                         style={{ wordWrap: "break-word", fontWeight: "bold" }}
                                         sx={{ flexGrow: 1 }}>
-                                        Parsley
+                                        {plantItem.title}
                                     </Typography>
                                     <Typography component="h5"
                                         variant="h5"
@@ -309,7 +312,8 @@ function DashboardContent() {
                                         align='left'
                                         style={{ wordWrap: "break-word" }}
                                         sx={{ flexGrow: 1 }}>
-                                        Parsley, or garden parsley (Petroselinum crispum) is a species of flowering plant in the family Apiaceae that is native to the central and eastern Mediterranean region (Sardinia, Lebanon, Israel, Cyprus, Turkey, southern Italy, Greece, Albania, Portugal, Spain, Malta, Morocco, Algeria, and Tunisia).
+                                        {plantItem.description}
+                                        
                                     </Typography>
                                 </Paper>
                             </Grid>
@@ -320,7 +324,7 @@ function DashboardContent() {
                                     align='left'
                                     style={{ wordWrap: "break-word" }}
                                     sx={{ flexGrow: 1 }}>
-                                    Technological maps
+                                    Технологические карты
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -345,7 +349,7 @@ function DashboardContent() {
                              color="success"
                              size='large'
                              onClick={()=>{navigate('/maps/create/' + plantId)}}
-                            >New Map</Button>
+                            >Создать тех. карту</Button>
                         </Grid>
                     </Container>
                 </Box>

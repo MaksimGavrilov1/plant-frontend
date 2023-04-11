@@ -21,7 +21,6 @@ import { useForm } from "react-hook-form";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import WarehouseIcon from '@mui/icons-material/Warehouse';
 import { ListItemIcon } from '@mui/material';
 import { USER_TOKEN, API_URL } from '../../service/AuthenticationService';
 import { useNavigate } from 'react-router-dom';
@@ -171,7 +170,7 @@ function DashboardContent() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            Plants
+                            Растения
                         </Typography>
                         <IconButton color="inherit">
                             <Badge badgeContent={4} color="secondary">
@@ -237,7 +236,7 @@ function DashboardContent() {
                                 <GrassIcon />
                             </Avatar>
                             <Typography component="h1" variant="h5">
-                                Create plant
+                                Создать растение
                             </Typography>
                             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
                                 <Grid container spacing={5}>
@@ -246,12 +245,12 @@ function DashboardContent() {
                                             required
                                             fullWidth
                                             id="title"
-                                            label="Title"
+                                            label="Название"
                                             name="title"
 
                                             autoComplete="title"
                                             {...register('title', {
-                                                required: "Title is required"
+                                                required: "Название является обязательным полем"
                                             })}
                                             error={errors?.title ? true : false}
                                             helperText={errors?.title?.message}
@@ -261,7 +260,7 @@ function DashboardContent() {
                                         <TextField
                                             fullWidth
                                             id="description"
-                                            label="Description"
+                                            label="Описание"
                                             name="description"
                                             multiline
                                             rows={4}
@@ -289,7 +288,7 @@ function DashboardContent() {
                                             )}
                                             <label htmlFor="picture">
                                                 <Button variant="contained" size="small" color="secondary" component="span">
-                                                    Upload Image
+                                                    Загрузить изображение
                                                 </Button>
                                             </label>
                                             
@@ -304,7 +303,7 @@ function DashboardContent() {
                                     color="success"
                                     sx={{ mt: 3, mb: 2 }}
                                 >
-                                    Create
+                                    Создать
                                 </Button>
                             </Box>
                         </Box>

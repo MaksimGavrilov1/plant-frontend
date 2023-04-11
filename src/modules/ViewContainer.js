@@ -119,7 +119,8 @@ function ContainerDashboard() {
                 
                 result.forEach(element => {
                     var date = new Date(element.time)
-                    element.time = date
+                    // const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    element.time = date.toLocaleString("ru-RU")
                     //date.customFormat("#DD#/#MM# #hh#:#mm#:#ss#")
                 });
                 setData(result);
@@ -169,7 +170,7 @@ function ContainerDashboard() {
                             textAlign={'center'}
                             sx={{ flexGrow: 1 }}
                         >
-                            Containers
+                            Помещения
                         </Typography>
                         <IconButton color="inherit">
                             <Badge badgeContent={4} color="secondary">
@@ -268,12 +269,13 @@ function ContainerDashboard() {
                                             <Tooltip />
                                             <Legend />
                                             <Line
+                                                name="Температура"
                                                 type="monotone"
                                                 dataKey="temperature"
                                                 stroke="#FF0000"
                                                 activeDot={true}
                                             />
-                                            <Line type="monotone" dataKey="humidity" stroke="#4169E1" />
+                                            <Line name="Влажность" type="monotone" dataKey="humidity" stroke="#4169E1" />
                                         </LineChart>
                                     </ResponsiveContainer>
 
@@ -330,7 +332,7 @@ function ContainerDashboard() {
                                     color="inherit"
                                     align='left'
                                     sx={{ flexGrow: 1, fontSize: '20pt' }}>
-                                    Setups
+                                    Установки
                                 </Typography>
 
                                 <TableContainer component={Paper}>
@@ -338,9 +340,9 @@ function ContainerDashboard() {
                                         <TableHead>
                                             <TableRow>
                                                 <TableCell sx={{ fontSize: '15pt' }} align="left">#</TableCell>
-                                                <TableCell sx={{ fontSize: '15pt' }} align="left">Address</TableCell>
-                                                <TableCell sx={{ fontSize: '15pt' }} align="center">Levels</TableCell>
-                                                <TableCell sx={{ fontSize: '15pt' }} align='center'>Free cells</TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align="left">Название</TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align="center">Уровни</TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align='center'>Количество свободных ячеек</TableCell>
                                                 <TableCell sx={{ fontSize: '15pt' }} align='left'></TableCell>
                                             </TableRow>
                                         </TableHead>
@@ -358,7 +360,7 @@ function ContainerDashboard() {
                                                         return self.findIndex(v => v.level === value.level) === index;
                                                     }).length}</TableCell>
                                                     <TableCell sx={{ fontSize: '15pt' }} align="center">{setup.levels.filter((value) => !value.plant).length}</TableCell>
-                                                    <TableCell><Button sx={{ color: "green" }} onClick={() => { navigate('/setup/view/' + setup.id) }} size="large">Check</Button></TableCell>
+                                                    <TableCell><Button sx={{ color: "green" }} onClick={() => { navigate('/setup/view/' + setup.id) }} size="large">Перейти</Button></TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
@@ -373,7 +375,7 @@ function ContainerDashboard() {
                                     color="success"
                                     size='large'
                                     onClick={() => { navigate('/setup/create/' + containerId) }}
-                                >Create setup</Button>
+                                >Создать установку</Button>
                             </Grid>
                         </Grid>
                     </Container>

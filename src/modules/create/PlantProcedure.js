@@ -192,7 +192,7 @@ function DashboardContent() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            Plant Procedure
+                            Посадка растения
                         </Typography>
                         <IconButton color="inherit">
                             <Badge badgeContent={4} color="secondary">
@@ -258,10 +258,10 @@ function DashboardContent() {
                                 <LocalFloristIcon></LocalFloristIcon>
                             </Avatar>
                             <Typography component="h1" variant="h5">
-                                Plant a culture
+                                Посадить культуру
                             </Typography>
                             <Typography component="h4" variant="subtitle2">
-                                You are going to use setup with next address: {renderObject.setupAddress}
+                                Вы собираетесь использовать установку со следующим названием: {renderObject.setupAddress}
                             </Typography>
                             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
                                 <Grid container spacing={5}>
@@ -277,8 +277,8 @@ function DashboardContent() {
                                                 <TextField
                                                     {...params}
                                                     error={errors?.plantTitle ? true : false}
-                                                    helperText={errors?.plantTitle?.message || (!errors.plantTitle && "Pick plant that you want to use")}
-                                                    label="Plant Title"
+                                                    helperText={errors?.plantTitle?.message || (!errors.plantTitle && "Выберите растение, которое вы собираетесь использовать")}
+                                                    label="Название растения"
                                                     required
                                                     {...register('plantTitle', {
                                                         required: "Plant is required"
@@ -292,7 +292,7 @@ function DashboardContent() {
                                             fullWidth
                                             type="number"
                                             id="plantAmount"
-                                            label="Cells amount"
+                                            label="Количество ячеек для посадки"
                                             name="plantAmount"
                                             inputProps={{
                                                 maxLength: 100,
@@ -380,15 +380,15 @@ function DashboardContent() {
                                                                             <Collapse in={openCollapse.get(row.title)} timeout="auto" unmountOnExit>
                                                                                 <Box sx={{ margin: 1 }}>
                                                                                     <Typography variant="h6" gutterBottom component="div">
-                                                                                        Conditions
+                                                                                        Условия
                                                                                     </Typography>
                                                                                     <Table size="small" aria-label="purchases">
                                                                                         <TableHead>
                                                                                             <TableRow>
-                                                                                                <TableCell>Min °C</TableCell>
-                                                                                                <TableCell>Max °C</TableCell>
-                                                                                                <TableCell >Min %</TableCell>
-                                                                                                <TableCell >Max %</TableCell>
+                                                                                                <TableCell>Мин °C</TableCell>
+                                                                                                <TableCell>Макс °C</TableCell>
+                                                                                                <TableCell >Мин %</TableCell>
+                                                                                                <TableCell >Макс %</TableCell>
                                                                                             </TableRow>
                                                                                         </TableHead>
                                                                                         <TableBody>
@@ -444,7 +444,7 @@ function DashboardContent() {
                                     color="success"
                                     sx={{ mt: 3, mb: 2 }}
                                 >
-                                    Create
+                                    Посадить
                                 </Button>
                             </Box>
                         </Box>

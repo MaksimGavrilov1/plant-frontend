@@ -95,8 +95,14 @@ function DashboardContent() {
                 // 'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: JSON.stringify(data) // body data type must match "Content-Type" header
+        }).then((result) => {
+            if (result.ok){
+                navigate("/containers")
+            } else {
+                throw new Error;
+            }
         })
-        navigate('/containers')
+        
     };
 
 
@@ -146,7 +152,7 @@ function DashboardContent() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            Containers
+                            Помещения
                         </Typography>
                         <IconButton color="inherit">
                             <Badge badgeContent={4} color="secondary">
@@ -212,7 +218,7 @@ function DashboardContent() {
                                 <WarehouseIcon />
                             </Avatar>
                             <Typography component="h1" variant="h5">
-                                Create container
+                                Создание помещения
                             </Typography>
                             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
                                 <Grid container spacing={5}>
@@ -221,7 +227,7 @@ function DashboardContent() {
                                             required
                                             fullWidth
                                             id="title"
-                                            label="Title"
+                                            label="Название"
                                             name="title"
 
                                             autoComplete="title"
@@ -236,7 +242,7 @@ function DashboardContent() {
                                         <TextField
                                             fullWidth
                                             id="description"
-                                            label="Description"
+                                            label="Описание"
                                             name="description"
                                             multiline
                                             rows={4}
@@ -256,8 +262,8 @@ function DashboardContent() {
                                             renderInput={(params) =>
                                                 <TextField
                                                     {...params}
-                                                    helperText="Pick device id that is located in your container"
-                                                    label="Device ID"
+                                                    helperText="Выберите ID устройства, которое будет расположено в вашем помещении"
+                                                    label="ID Устройства"
                                                     {...register('deviceId')}
                                                 />}
                                         />
@@ -271,7 +277,7 @@ function DashboardContent() {
 
                                     sx={{ mt: 3, mb: 2 }}
                                 >
-                                    Create
+                                    Создать
                                 </Button>
                             </Box>
                         </Box>
