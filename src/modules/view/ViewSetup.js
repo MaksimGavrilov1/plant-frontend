@@ -150,8 +150,12 @@ function ViewSetupContent() {
     const id = openPopupMap.get("cell_1") ? 'simple-popover' : undefined;
 
     const handleChange = (event, newAlignment) => {
-        setAlignment(newAlignment)
-        setLevel(newAlignment)
+        if (newAlignment === null){
+            
+        } else {
+            setAlignment(newAlignment)
+            setLevel(newAlignment)
+        }
     };
 
 
@@ -214,6 +218,11 @@ function ViewSetupContent() {
                         let cellPlantTitle = tempObject.cells[i].plantTitle
                         let cellLevel = tempObject.cells[i].level
                         let techMapTitle = tempObject.cells[i].techMapTitle
+                        let dateOfPlant = tempObject.cells[i].dateOfPlant
+                        let cellID = tempObject.cells[i].cellId
+                        var plantDate = new Date(dateOfPlant)
+                    // const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                        dateOfPlant = plantDate.toLocaleString("ru-RU")
                         if (cellPlantTitle) {
                             tempCell.push(
                                 <Grid key={"" + cellLevel + "_level_" + i} item >
@@ -241,6 +250,8 @@ function ViewSetupContent() {
                                     >
                                         <Typography sx={{ p: 2 }}>{"Растение: " + cellPlantTitle  }</Typography>
                                         <Typography sx={{ p: 2, m:0 }}>{" \nТех. карта: " + techMapTitle}</Typography>
+                                        <Typography sx={{ p: 2, m:0 }}>{" Дата посадки: " + dateOfPlant}</Typography>
+                                        <Typography sx={{ p: 2, m:0 }}>{" ID ячейки: " + cellID}</Typography>
                                     </Popover>
                                 </Grid>
                             )
