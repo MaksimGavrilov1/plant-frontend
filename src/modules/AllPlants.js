@@ -85,7 +85,7 @@ function DashboardContent() {
             .then(res => res.json())
             .then((result) => {
                 setPlants(result);
-                console.log(result)
+                
             }
             )
     }, [])
@@ -124,13 +124,9 @@ function DashboardContent() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            Plants
+                            Растения
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                        
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -185,12 +181,12 @@ function DashboardContent() {
                                 color="text.primary"
                                 gutterBottom
                             >
-                                Plants
+                                Растения
                             </Typography>
                             <Typography variant="h5" align="center" color="text.secondary" component="p">
-                                Below you can find all plants that you can use for growing. If you want to register new plant in your system you can 'Create plant' button.
+                                Ниже вы можете найти растения, которые могут быть использованы для выращивания. Для того, чтобы добавить новое растение, необходимо нажать кнопку "Создать растение"
                             </Typography>
-                            <Button color='success' sx={{ mt: 3 }} variant="contained" size='large' onClick={() => { navigate('/plants/create') }}>Create plant</Button>
+                            <Button color='success' sx={{ mt: 3 }} variant="contained" size='large' onClick={() => { navigate('/plants/create') }}>Создать растение</Button>
 
                         </Container>
                         <Divider></Divider>
@@ -217,7 +213,7 @@ function DashboardContent() {
                                     </CardActionArea>
                                     <CardActions>
                                         <Button sx={{color:"green"}} size="small" color="primary" onClick={() => { navigate('/plants/view/' + plant.id) }}>
-                                            Proceed
+                                            Подробнее
                                         </Button>
                                     </CardActions>
                                 </Card>

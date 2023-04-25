@@ -30,8 +30,22 @@ import Button from '@mui/material/Button';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Popover from '@mui/material/Popover';
+import Modal from '@mui/material/Modal';
+import { API_URL, USER_TOKEN } from '../../service/AuthenticationService';
 
 const drawerWidth = 240;
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
@@ -136,17 +150,38 @@ function ViewSetupContent() {
                 tempPop.set(key, false)
             }
         }
-        // for (let j = 0; j < tempPop.keys.length; j++) {
-        //     console.log("ITER")
-        //     tempPop.set("cell_" + j, false);
-        // }
         setAnchorElMap(tempAnchor)
         setOpenPopupMap(tempPop)
         let tempRefreshVal = tempRefresh;
         setTempRefresh(!tempRefreshVal)
     };
 
-    //const openPopup = Boolean(anchorEl);
+    const [readyToDel, setReadyToDel] = useState(true);
+
+    function isReady() {
+        fetch(API_URL + "/setup/delete/" + setupId, {
+            method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': sessionStorage.getItem(USER_TOKEN)
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+        .then(res => res.json())
+        .then((result) => {
+            
+            if (result) {
+                navigate("/containers")
+            } else {
+                setReadyToDel(false)
+            }
+        })
+    }
+
+    const [openDeletePlant, setOpenDeletePlant] = React.useState(false);
+    const handleOpenDelete = () => setOpenDeletePlant(true);
+    const handleCloseDelete = () => setOpenDeletePlant(false);
+
     const id = openPopupMap.get("cell_1") ? 'simple-popover' : undefined;
 
     const handleChange = (event, newAlignment) => {
@@ -204,16 +239,7 @@ function ViewSetupContent() {
 
                     }
                     setPageButtons(temp)
-                    // let tempPopupMap = new Map();
-                    // let tempAnchorElMap = new Map();
-                    // for (let i = 0; i < tempObject.cells.length; i++) {
-                    //     tempAnchorElMap.set("cell_" + i, null);
-                    //     tempPopupMap.set("cell_" + i, Boolean(tempAnchorElMap.get("cell_" + i)));
 
-                    // }
-                    // console.log(tempPopupMap)
-                    // setAnchorElMap(tempAnchorElMap)
-                    // setOpenPopupMap(tempPopupMap)
                     for (let i = 0; i < tempObject.cells.length; i++) {
                         let cellPlantTitle = tempObject.cells[i].plantTitle
                         let cellLevel = tempObject.cells[i].level
@@ -332,11 +358,7 @@ function ViewSetupContent() {
                         >
                             Установка
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                        
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -393,7 +415,33 @@ function ViewSetupContent() {
                                         noWrap
                                         sx={{ flexGrow: 1 }}>
                                         Название:  {setupItem.address}
+                                        <Button sx={{ ml: 2 }} color='error' variant='contained' size='small' onClick={handleOpenDelete}>Удалить</Button>
+                                        <Modal
+                                            open={openDeletePlant}
+                                            onClose={handleCloseDelete}
+                                            aria-labelledby="modal-modal-title"
+                                            aria-describedby="modal-modal-description"
+                                        >
+                                            <Box sx={style}>
+                                                <Typography id="modal-modal-title" variant="h6" component="h2">
+                                                    Удаление установки
+                                                </Typography>
+                                                <Typography id="modal-modal-description" sx={{ mt: 2, mb:2 }}>
+                                                    Вы уверены, что хотите удалить установку?
+                                                </Typography>
+                                                {!readyToDel && <Typography color={"red"} sx={{mt:3, mb:3}}>Вы не можете удалить установку, так как существуют еще занятые ячейки</Typography>}
+                                                <Grid container maxWidth="lg" spacing={3}>
+                                                    <Grid item>
+                                                       <Button color='success' variant='contained' onClick={()=> isReady()} >Удалить</Button>
+                                                    </Grid>
+                                                    <Grid item>
+                                                        <Button variant='contained' color="error" onClick={()=> handleCloseDelete()}>Назад</Button>
+                                                    </Grid>
+                                                </Grid>
+                                            </Box>
+                                        </Modal>
                                     </Typography>
+                                    
                                     <Grid container spacing={3} sx={{ mt: 2 }}>
                                         <Grid item xs={4}>
                                             <Typography component="h6"

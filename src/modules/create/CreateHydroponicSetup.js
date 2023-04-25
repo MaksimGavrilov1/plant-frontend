@@ -139,11 +139,7 @@ function CreateHydroponicSetupView() {
                         >
                             Гидропонная установка
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                        
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -217,7 +213,7 @@ function CreateHydroponicSetupView() {
 
                                             autoComplete="address"
                                             {...register('address', {
-                                                required: "Address is required"
+                                                required: "Название обязательно"
                                             })}
                                             error={errors?.address ? true : false}
                                             helperText={errors?.address?.message}
@@ -235,18 +231,18 @@ function CreateHydroponicSetupView() {
                                                 step: "1"
                                             }}
                                             {...register('levelsAmount', {
-                                                required: "Field is required",
+                                                required: "Это поле обязательно",
                                                 pattern: {
                                                     value: /^\d+$/,
-                                                    message: 'Only integer values'
+                                                    message: 'Только целочисленные значения'
                                                 },
                                                 max: {
-                                                    value: 999,
-                                                    message: 'Max value is 999'
+                                                    value: 30,
+                                                    message: 'Максимальное значение: 30'
                                                 },
                                                 min: {
                                                     value: 1.0,
-                                                    message: 'Min value is 1'
+                                                    message: 'Минимальное значение: 1'
                                                 }
 
                                             })}
@@ -266,18 +262,18 @@ function CreateHydroponicSetupView() {
                                                 step: "1"
                                             }}
                                             {...register('cellsAmount', {
-                                                required: "Field is required",
+                                                required: "Это поле обязательно",
                                                 pattern: {
                                                     value: /^\d+$/,
-                                                    message: 'Only integer values'
+                                                    message: 'Только целочисленные значения'
                                                 },
                                                 max: {
-                                                    value: 999,
-                                                    message: 'Max value is 999'
+                                                    value: 400,
+                                                    message: 'Максимальное значение: 400'
                                                 },
                                                 min: {
                                                     value: 1.0,
-                                                    message: 'Min value is 1'
+                                                    message: 'Минимальное значение: 1'
                                                 }
 
                                             })}

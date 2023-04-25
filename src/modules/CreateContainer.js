@@ -121,7 +121,7 @@ function DashboardContent() {
     const toggleDrawer = () => {
         setOpen(!open);
     };
-    console.log(devicesIds)
+    
 
     return (
         <ThemeProvider theme={mdTheme}>
@@ -154,11 +154,7 @@ function DashboardContent() {
                         >
                             Помещения
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                        
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -232,7 +228,7 @@ function DashboardContent() {
 
                                             autoComplete="title"
                                             {...register('title', {
-                                                required: "Title is required"
+                                                required: "Это поле обязательно"
                                             })}
                                             error={errors?.title ? true : false}
                                             helperText={errors?.title?.message}
@@ -262,9 +258,11 @@ function DashboardContent() {
                                             renderInput={(params) =>
                                                 <TextField
                                                     {...params}
-                                                    helperText="Выберите ID устройства, которое будет расположено в вашем помещении"
+                                                    helperText={errors?.deviceId?.message || (!errors.deviceId && "Выберите ID устройства, которое будет расположено в вашем помещении")}
                                                     label="ID Устройства"
-                                                    {...register('deviceId')}
+                                                    {...register('deviceId', {
+                                                        required: "Это поле обязательно"
+                                                    })}
                                                 />}
                                         />
                                     </Grid>

@@ -109,6 +109,7 @@ function DashboardContent() {
     const [renderingMaps, setRenderingMaps] = useState([]);
     const [plantTitle, setPlantTitle] = useState('')
     const [selectedValue, setSelectedValue] = React.useState('');
+    const [validateFlag, setValidateFlag] = useState(true)
 
 
     const handleOpening = (index) => {
@@ -131,20 +132,23 @@ function DashboardContent() {
 
 
     const onSubmit = (data) => {
-        console.log(data)
-        fetch(API_URL + "/setup/plant/" + setupId, {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': sessionStorage.getItem(USER_TOKEN)
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: JSON.stringify(data) // body data type must match "Content-Type" header
-        })
-        .then(()=> {
-            navigate('/setup/view/' + setupId)
-        })
         
+        if (data.mapPlantTitle == null) {
+            setValidateFlag(false)
+        } else {
+            fetch(API_URL + "/setup/plant/" + setupId, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': sessionStorage.getItem(USER_TOKEN)
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: JSON.stringify(data) // body data type must match "Content-Type" header
+            })
+            .then(()=> {
+                navigate('/setup/view/' + setupId)
+            })
+        }
     };
 
     useEffect(() => {
@@ -194,11 +198,7 @@ function DashboardContent() {
                         >
                             Посадка растения
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                        
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -272,7 +272,7 @@ function DashboardContent() {
                                             disablePortal
                                             id="plantTitle"
                                             options={plantsTitles}
-                                            onChange={(e, value) => { setPlantTitle(value); filterRenderingMaps(value); setOpenCollapse(new Map()) }}
+                                            onChange={(e, value) => { setValidateFlag(true); setPlantTitle(value); filterRenderingMaps(value); setOpenCollapse(new Map()) }}
                                             renderInput={(params) =>
                                                 <TextField
                                                     {...params}
@@ -281,7 +281,7 @@ function DashboardContent() {
                                                     label="Название растения"
                                                     required
                                                     {...register('plantTitle', {
-                                                        required: "Plant is required"
+                                                        required: "Это поле обязательно"
                                                     })}
                                                 />}
                                         />
@@ -299,18 +299,18 @@ function DashboardContent() {
                                                 step: "1"
                                             }}
                                             {...register('plantAmount', {
-                                                required: "Field is required",
+                                                required: "Это поле обязательно",
                                                 pattern: {
                                                     value: /^\d+$/,
-                                                    message: 'Only integer values'
+                                                    message: 'Только целочисленные значения'
                                                 },
                                                 max: {
                                                     value: renderObject.freeCells,
-                                                    message: 'Max value is ' + renderObject.freeCells
+                                                    message: 'Максимальное значение: ' + renderObject.freeCells
                                                 },
                                                 min: {
                                                     value: 1,
-                                                    message: 'Min value is 1'
+                                                    message: 'Минимальное значение: 1'
                                                 }
 
                                             })}
@@ -337,21 +337,12 @@ function DashboardContent() {
                                                                                 value={row.title}
                                                                                 control={<Radio />}
                                                                                 {...register('mapPlantTitle', {
-                                                                                    required: "Tech map is required"
+                                                                                    required: "Необходимо выбрать тех. карту"
                                                                                 })}
-                                                                                
-                                                                                
-                                                                            />
-                                                                            {/* <Radio
-                                                                            checked={selectedValue === row.title}
-                                                                            onChange={handleChange}
-                                                                            name="radio-button"
-                                                                            value={row.title}
-                                                                            {...register('mapPlantTitle', {
-                                                                                required: "Plant is required"
-                                                                            })}>
 
-                                                                        </Radio> */}
+
+                                                                            />
+
                                                                         </TableCell>
                                                                         <TableCell >
                                                                             <IconButton
@@ -431,12 +422,12 @@ function DashboardContent() {
                                                     </Table>
                                                 </TableContainer>
                                             </RadioGroup>
-                                            {errors?.mapPlantTitle?.message && <Typography align='left' color="red" sx={{mt:2, fontSize:12}}>{errors?.mapPlantTitle?.message}</Typography>}
+                                            {errors?.mapPlantTitle?.message && <Typography align='center' color="red" sx={{ mt: 2, fontSize: 16 }}>{errors?.mapPlantTitle?.message}</Typography>}
                                         </FormControl>
                                     </Grid>
 
-
                                 </Grid>
+                                <Typography color={"red"} >{!validateFlag && "У данного растения нет тех. карт"}</Typography>
                                 <Button
                                     type="submit"
                                     fullWidth

@@ -35,9 +35,21 @@ import secureGetFetch from '../../service/CustomFetch';
 import ListItem from '@mui/material/ListItem';
 import LabelIcon from '@mui/icons-material/Label';
 import { Button } from '@mui/material';
-import { Image } from '@mui/icons-material';
-
+import Modal from '@mui/material/Modal';
+import { API_URL, USER_TOKEN } from '../../service/AuthenticationService';
 const drawerWidth = 240;
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
@@ -182,12 +194,34 @@ function DashboardContent() {
     const plantId = params.plantId;
     const navigate = useNavigate();
     const [plantItem, setPlantItem] = useState({});
+    const [readyToDel, setReadyToDel] = useState(true);
+
+    function isReady() {
+        fetch(API_URL + "/plants/delete/" + plantId, {
+            method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': sessionStorage.getItem(USER_TOKEN)
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+        .then(res => res.json())
+        .then((result) => {
+            
+            if (result) {
+                navigate("/plants")
+            } else {
+                setReadyToDel(false)
+            }
+        })
+    }
+
     useEffect(() => {
         secureGetFetch("http://localhost:8080/plants/view/" + plantId)
             .then(res => res.json())
             .then((result) => {
                 setPlantItem(result);
-                console.log(result)
+
             }
             )
     }, [plantId])
@@ -195,6 +229,10 @@ function DashboardContent() {
     const toggleDrawer = () => {
         setOpen(!open);
     };
+
+    const [openDeletePlant, setOpenDeletePlant] = React.useState(false);
+    const handleOpen = () => setOpenDeletePlant(true);
+    const handleClose = () => setOpenDeletePlant(false);
 
     return (
         <ThemeProvider theme={mdTheme}>
@@ -227,11 +265,7 @@ function DashboardContent() {
                         >
                             Растения
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                        
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -303,8 +337,33 @@ function DashboardContent() {
                                         color="inherit"
                                         align='left'
                                         style={{ wordWrap: "break-word", fontWeight: "bold" }}
-                                        sx={{ flexGrow: 1 }}>
+                                        sx={{ flexGrow: 1, mb: 1 }}>
                                         {plantItem.title}
+                                        <Button sx={{ ml: 2 }} color='error' variant='contained' size='small' onClick={handleOpen}>Удалить</Button>
+                                        <Modal
+                                            open={openDeletePlant}
+                                            onClose={handleClose}
+                                            aria-labelledby="modal-modal-title"
+                                            aria-describedby="modal-modal-description"
+                                        >
+                                            <Box sx={style}>
+                                                <Typography id="modal-modal-title" variant="h6" component="h2">
+                                                    Удаление растения
+                                                </Typography>
+                                                <Typography id="modal-modal-description" sx={{ mt: 2, mb:2 }}>
+                                                    Вы уверены, что хотите удалить растение?
+                                                </Typography>
+                                                {!readyToDel && <Typography color={"red"} sx={{mt:3, mb:3}}>Вы не можете удалить растение, так как оно используется в установке</Typography>}
+                                                <Grid container maxWidth="lg" spacing={3}>
+                                                    <Grid item>
+                                                       <Button color='success' variant='contained' onClick={()=> isReady()} >Удалить</Button>
+                                                    </Grid>
+                                                    <Grid item>
+                                                        <Button variant='contained' color="error" onClick={()=> handleClose()}>Назад</Button>
+                                                    </Grid>
+                                                </Grid>
+                                            </Box>
+                                        </Modal>
                                     </Typography>
                                     <Typography component="h5"
                                         variant="h5"
@@ -313,13 +372,13 @@ function DashboardContent() {
                                         style={{ wordWrap: "break-word" }}
                                         sx={{ flexGrow: 1 }}>
                                         {plantItem.description}
-                                        
+
                                     </Typography>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12} sx={{ mt: 10 }}>
                                 <Typography component="h2"
-                                    variant="h4"
+                                    variant="h5"
                                     color="inherit"
                                     align='left'
                                     style={{ wordWrap: "break-word" }}
@@ -343,12 +402,12 @@ function DashboardContent() {
 
                         </Grid>
                         <Grid item xs={12}>
-                            <Button 
-                             sx={{ color: "green", mt: 3, width:"20%" }}
-                             variant="outlined"
-                             color="success"
-                             size='large'
-                             onClick={()=>{navigate('/maps/create/' + plantId)}}
+                            <Button
+                                sx={{ color: "green", mt: 3, width: "20%" }}
+                                variant="outlined"
+                                color="success"
+                                size='large'
+                                onClick={() => { navigate('/maps/create/' + plantId) }}
                             >Создать тех. карту</Button>
                         </Grid>
                     </Container>

@@ -30,6 +30,7 @@ import TableRow from '@mui/material/TableRow';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import secureGetFetch from '../../service/CustomFetch';
+import { API_URL, USER_TOKEN } from '../../service/AuthenticationService';
 
 const drawerWidth = 240;
 
@@ -82,6 +83,8 @@ const mdTheme = createTheme();
 function DashboardContent() {
     const navigate = useNavigate();
     const [devices, setDevices] = useState([]);
+    const [devToDel, setDevToDel] = useState();
+    const [readyToDel, setReadyToDel] = useState(true);
     useEffect(() => {
         secureGetFetch("http://localhost:8080/device/all")
         .then(res => res.json())
@@ -90,11 +93,34 @@ function DashboardContent() {
             
         }
         )
-    }, [])
+    }, [devToDel, readyToDel])
     const [open, setOpen] = useState(false);
     const toggleDrawer = () => {
         setOpen(!open);
     };
+
+   
+    
+
+    function isReady(deviceId, devId) {
+        fetch(API_URL + "/device/delete/" + deviceId, {
+            method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': sessionStorage.getItem(USER_TOKEN)
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+        .then(res => res.json())
+        .then((result) => {
+            if (result) {
+                navigate("/containers")
+            } else {
+                setDevToDel(devId)
+                setReadyToDel(false)
+            }
+        })
+    }
 
 
     return (
@@ -126,13 +152,9 @@ function DashboardContent() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            Device
+                            Устройства
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                        
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -183,7 +205,7 @@ function DashboardContent() {
                         color="inherit"
                         align='left'
                         sx={{ flexGrow: 1, fontSize: '26pt', ml:2, mt:4 }}>
-                        Devices
+                        Устройства
                         <Divider sx={{ mb: 4 }}></Divider>
                     </Typography>
 
@@ -196,9 +218,9 @@ function DashboardContent() {
                                     <TableHead>
                                         <TableRow>
                                             <TableCell sx={{ fontSize: '15pt' }} align="left">#</TableCell>
-                                            <TableCell sx={{ fontSize: '15pt' }} align="left">Device ID</TableCell>
-                                            <TableCell sx={{ fontSize: '15pt' }} align="center">Register ID</TableCell>
-                                            <TableCell sx={{ fontSize: '15pt' }} align='center'>Broker URL</TableCell>
+                                            <TableCell sx={{ fontSize: '15pt' }} align="left">ID устройства</TableCell>
+                                            <TableCell sx={{ fontSize: '15pt' }} align="center">ID регистра</TableCell>
+                                            <TableCell sx={{ fontSize: '15pt' }} align='center'>URL брокера</TableCell>
                                             <TableCell sx={{ fontSize: '15pt' }} align='left'></TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -214,6 +236,7 @@ function DashboardContent() {
                                                 <TableCell sx={{ fontSize: '15pt' }} align="left">{device.deviceId}</TableCell>
                                                 <TableCell sx={{ fontSize: '15pt' }} align="center">{device.registryId}</TableCell>
                                                 <TableCell sx={{ fontSize: '15pt' }} align="center">{device.brokerURL}</TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align="center"><Button variant='contained' color='error' onClick={()=>isReady(device.id, device.deviceId)}>Удалить</Button></TableCell>
                                                 {/* <TableCell><Button sx={{ color: "green" }} onClick={() => { navigate('/setup/view/' + setup.id) }} size="large">Check</Button></TableCell> */}
                                             </TableRow>
                                         ))}
@@ -222,13 +245,16 @@ function DashboardContent() {
                             </TableContainer>
 
                         </Grid>
+                        <Typography color={"red"}>
+                            {!readyToDel && "Невозможно удалить устройство: " + devToDel + ", так как существует помещение с этим устройством"}
+                        </Typography>
                         <Button 
                              sx={{  mt: 3, width:"20%" }}
                              variant="contained"
                              color="success"
                              size='large'
                              onClick={()=>{navigate('/devices/create')}}
-                            >Add device</Button>
+                            >Добавить</Button>
                     </Container>
                 </Box>
             </Box>

@@ -43,10 +43,22 @@ import {
     Legend,
     ResponsiveContainer
 } from 'recharts';
-
-
+import Modal from '@mui/material/Modal';
+import { API_URL, USER_TOKEN } from '../service/AuthenticationService';
 
 const drawerWidth = 240;
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
@@ -105,6 +117,33 @@ function ContainerDashboard() {
     const [constantData, setConstantData] = useState();
     const [flag, setFlag] = useState(false)
     let isLoaded = false;
+
+    const [readyToDel, setReadyToDel] = useState(true);
+
+    function isReady() {
+        fetch(API_URL + "/container/delete/" + containerId, {
+            method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': sessionStorage.getItem(USER_TOKEN)
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        })
+            .then(res => res.json())
+            .then((result) => {
+                
+                if (result) {
+                    navigate("/containers")
+                } else {
+                    setReadyToDel(false)
+                }
+            })
+    }
+
+    const [openDeletePlant, setOpenDeletePlant] = React.useState(false);
+    const handleOpenDelete = () => setOpenDeletePlant(true);
+    const handleCloseDelete = () => setOpenDeletePlant(false);
+
     useEffect(() => {
 
         secureGetFetch("http://localhost:8080/container/view/" + containerId)
@@ -116,7 +155,7 @@ function ContainerDashboard() {
         secureGetFetch("http://localhost:8080/device/data/" + containerId)
             .then(res => res.json())
             .then((result) => {
-                
+
                 result.forEach(element => {
                     var date = new Date(element.time)
                     // const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -124,9 +163,9 @@ function ContainerDashboard() {
                     //date.customFormat("#DD#/#MM# #hh#:#mm#:#ss#")
                 });
                 setData(result);
-                var temp = (result.filter((element) =>  element.status === "CONSTANT" ? true : false))[0]
+                var temp = (result.filter((element) => element.status === "CONSTANT" ? true : false))[0]
                 setConstantData(temp)
-                
+
             }
             )
         isLoaded = true
@@ -172,11 +211,7 @@ function ContainerDashboard() {
                         >
                             Помещения
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                        
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -233,6 +268,31 @@ function ContainerDashboard() {
                                         noWrap
                                         sx={{ flexGrow: 1 }}>
                                         {containerItem.title}
+                                        <Button sx={{ ml: 2 }} color='error' variant='contained' size='small' onClick={handleOpenDelete}>Удалить</Button>
+                                        <Modal
+                                            open={openDeletePlant}
+                                            onClose={handleCloseDelete}
+                                            aria-labelledby="modal-modal-title"
+                                            aria-describedby="modal-modal-description"
+                                        >
+                                            <Box sx={style}>
+                                                <Typography id="modal-modal-title" variant="h6" component="h2">
+                                                    Удаление помещения
+                                                </Typography>
+                                                <Typography id="modal-modal-description" sx={{ mt: 2, mb: 2 }}>
+                                                    Вы уверены, что хотите удалить помешение?
+                                                </Typography>
+                                                {!readyToDel && <Typography color={"red"} sx={{ mt: 3, mb: 3 }}>Вы не можете удалить помещение, так как присутствуют установки у этого помещения</Typography>}
+                                                <Grid container maxWidth="lg" spacing={3}>
+                                                    <Grid item>
+                                                        <Button color='success' variant='contained' onClick={() => isReady()} >Удалить</Button>
+                                                    </Grid>
+                                                    <Grid item>
+                                                        <Button variant='contained' color="error" onClick={() => handleCloseDelete()}>Назад</Button>
+                                                    </Grid>
+                                                </Grid>
+                                            </Box>
+                                        </Modal>
                                     </Typography>
                                 </Paper>
                             </Grid>
@@ -319,7 +379,7 @@ function ContainerDashboard() {
                                                 color="inherit"
                                                 align='left'
                                                 sx={{ flexGrow: 1 }}>
-                                                {constantData && constantData.humidity }%
+                                                {constantData && constantData.humidity}%
                                             </Typography>
                                         </Grid>
 
@@ -349,18 +409,20 @@ function ContainerDashboard() {
                                         <TableBody>
                                             {containerItem.setups && containerItem.setups.map((setup, index) => (
                                                 <TableRow
-                                                    key={setup.id}
+                                                    key={setup.setupID}
                                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                                 >
                                                     <TableCell sx={{ fontSize: '15pt' }} component="th" scope="row">
                                                         {index + 1}
                                                     </TableCell>
                                                     <TableCell sx={{ fontSize: '15pt' }} align="left">{setup.address}</TableCell>
-                                                    <TableCell sx={{ fontSize: '15pt' }} align="center">{setup.levels.filter((value, index, self) => {
+                                                    <TableCell sx={{ fontSize: '15pt' }} align="center">{setup.levelsAmount}</TableCell>
+                                                    {/* <TableCell sx={{ fontSize: '15pt' }} align="center">{setup.levels.filter((value, index, self) => {
                                                         return self.findIndex(v => v.level === value.level) === index;
-                                                    }).length}</TableCell>
-                                                    <TableCell sx={{ fontSize: '15pt' }} align="center">{setup.levels.filter((value) => !value.plant).length}</TableCell>
-                                                    <TableCell><Button sx={{ color: "green" }} onClick={() => { navigate('/setup/view/' + setup.id) }} size="large">Перейти</Button></TableCell>
+                                                    }).length}</TableCell> */}
+                                                    {/* <TableCell sx={{ fontSize: '15pt' }} align="center">{setup.levels.filter((value) => !value.plant).length}</TableCell> */}
+                                                    <TableCell sx={{ fontSize: '15pt' }} align="center">{setup.freeCells}</TableCell>
+                                                    <TableCell><Button sx={{ color: "green" }} onClick={() => { navigate('/setup/view/' + setup.setupID) }} size="large">Перейти</Button></TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>

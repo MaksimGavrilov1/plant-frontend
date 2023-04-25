@@ -24,6 +24,7 @@ import DevicesComponent from './component/DevicesComponent';
 import CreateDeviceComponent from './component/CreateDevice';
 import TasksComponent from './component/TasksComponent';
 import HistoryComponent from './component/HistoryComponent';
+import ViolationsComponent from './component/ViolationsComponent';
 
 function App() {
   return (
@@ -86,6 +87,9 @@ function App() {
           </Route>
           <Route exact path='/history' element={<AuthenticatedRoute/>}>
             <Route exact path='/history' element={<HistoryComponent/>}/>
+          </Route>
+          <Route exact path='/violations' element={<AuthenticatedRoute/>}>
+            <Route exact path='/violations' element={<ViolationsComponent/>}/>
           </Route>
           <Route path='/register' element={<RegisterComponent />}></Route>
           {/* If any route mismatches the upper

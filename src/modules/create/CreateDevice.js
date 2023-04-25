@@ -79,13 +79,14 @@ const mdTheme = createTheme();
 
 function CreateHydroponicSetupView() {
     const navigate = useNavigate();
+    const [uniqueFlag, setUniqueFlag] = useState(true)
 
     const { register, handleSubmit, formState: { errors } } = useForm({
         mode: "all"
     });
 
     const onSubmit = (data) => {
-        console.log(data)
+        
         fetch(API_URL + "/device/add", {
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             headers: {
@@ -95,7 +96,16 @@ function CreateHydroponicSetupView() {
             },
             body: JSON.stringify(data) // body data type must match "Content-Type" header
         })
-        navigate('/devices/all')
+        .then(res=>res.json())
+        .then((result)=>{
+            
+            if (result) {
+                navigate('/devices/all')
+            } else {
+                setUniqueFlag(false)
+            }
+        })
+        
     };
 
     useEffect(() => {
@@ -136,13 +146,9 @@ function CreateHydroponicSetupView() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            Device
+                           Устройства
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                        
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -202,7 +208,7 @@ function CreateHydroponicSetupView() {
                                 <SettingsIcon />
                             </Avatar>
                             <Typography component="h1" variant="h5">
-                                Create device
+                                Создание устройства
                             </Typography>
                             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
                                 <Grid container spacing={5}>
@@ -211,12 +217,12 @@ function CreateHydroponicSetupView() {
                                             required
                                             fullWidth
                                             id="deviceId"
-                                            label="Device ID"
+                                            label="ID устройства"
                                             name="deviceId"
 
                                             autoComplete="Device ID"
                                             {...register('deviceId', {
-                                                required: "Device ID is required"
+                                                required: "ID устройства обязателен"
                                             })}
                                             error={errors?.deviceId ? true : false}
                                             helperText={errors?.deviceId?.message}
@@ -225,14 +231,15 @@ function CreateHydroponicSetupView() {
                                     <Grid item xs={12}>
                                         <TextField
                                             required
+                                            type='password'
                                             fullWidth
                                             id="devicePassword"
-                                            label="Device Password"
+                                            label="Пароль устройства"
                                             name="devicePassword"
 
                                             autoComplete="Device Password"
                                             {...register('devicePassword', {
-                                                required: "Device Password is required"
+                                                required: "Пароль устройства обязателен"
                                             })}
                                             error={errors?.devicePassword ? true : false}
                                             helperText={errors?.devicePassword?.message}
@@ -243,12 +250,12 @@ function CreateHydroponicSetupView() {
                                             required
                                             fullWidth
                                             id="registryId"
-                                            label="Registry IDs"
+                                            label="ID регистра"
                                             name="registryId"
 
                                             autoComplete="Registry ID"
                                             {...register('registryId', {
-                                                required: "Registry ID is required"
+                                                required: "ID регистра обязателен"
                                             })}
                                             error={errors?.registryId ? true : false}
                                             helperText={errors?.registryId?.message}
@@ -259,12 +266,13 @@ function CreateHydroponicSetupView() {
                                             required
                                             fullWidth
                                             id="registryPassword"
-                                            label="Registry Password"
+                                            label="Пароль регистра"
                                             name="registryPassword"
+                                            type='password'
 
                                             autoComplete="Registry Password"
                                             {...register('registryPassword', {
-                                                required: "Registry Password is required"
+                                                required: "Пароль регистра необходим"
                                             })}
                                             error={errors?.registryPassword ? true : false}
                                             helperText={errors?.registryPassword?.message}
@@ -275,18 +283,20 @@ function CreateHydroponicSetupView() {
                                             required
                                             fullWidth
                                             id="brokerURL"
-                                            label="Broker URL"
+                                            label="брокер-URL"
                                             name="brokerURL"
 
                                             autoComplete="Broker URL"
                                             {...register('brokerURL', {
-                                                required: "Broker URL is required"
+                                                required: "брокер-URL обязателен"
                                             })}
                                             error={errors?.brokerURL ? true : false}
                                             helperText={errors?.brokerURL?.message}
                                         />
                                     </Grid>
+                                    
                                 </Grid>
+                                <Typography sx={{mt:2}} color={"red"}>{!uniqueFlag && "Уще существует устройство с таким ID"}</Typography>
                                 <Button
                                     type="submit"
                                     fullWidth
@@ -295,7 +305,7 @@ function CreateHydroponicSetupView() {
 
                                     sx={{ mt: 3, mb: 2 }}
                                 >
-                                    Create
+                                    Создать
                                 </Button>
                             </Box>
                         </Box>

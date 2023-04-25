@@ -104,22 +104,22 @@ function DashboardContent() {
     const [openMap, setOpenMap] = useState(new Map())
 
     const handleOpen = (taskId) => {
-
         if (openMap.get(taskId) === undefined) {
-            openMap.set(taskId, true)
+            openMap.set(taskId, false)
         } else {
             openMap.set(taskId, true)
         }
         var temp = openModal
         setOpenModal(!temp)
     };
+
     const handleClose = (taskId) => {
+        console.log(openMap)
         openMap.set(taskId, false)
         setOpenModal(false);
     };
 
     const initOpen = (taskId) => {
-        console.log(openMap)
         if (openMap.get(taskId) === undefined) {
             openMap.set(taskId, false)
             return true;
@@ -139,6 +139,9 @@ function DashboardContent() {
     }, [flag, openModal])
 
     const deleteTask = (taskId) => {
+        console.log(openMap)
+        openMap.set(taskId, false)
+        setOpenModal(false)
         fetch(API_URL + "/task/delete", {
             method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
             headers: {
@@ -148,7 +151,8 @@ function DashboardContent() {
             },
             body: JSON.stringify(taskId) // body data type must match "Content-Type" header
         })
-        setOpenModal(false)
+        navigate("/tasks")
+        
     }
 
     const [open, setOpen] = useState(false);
@@ -186,13 +190,9 @@ function DashboardContent() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            Tasks
+                            Задачи
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                        
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -243,7 +243,7 @@ function DashboardContent() {
                         color="inherit"
                         align='left'
                         sx={{ flexGrow: 1, fontSize: '26pt', ml: 2, mt: 4 }}>
-                        Tasks
+                        Задачи
                         <Divider sx={{ mb: 4 }}></Divider>
                     </Typography>
                     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -254,9 +254,9 @@ function DashboardContent() {
                                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell sx={{ fontSize: '15pt' }} align="left">Task title</TableCell>
-                                            <TableCell sx={{ fontSize: '15pt' }} align="center">Harvest UUID</TableCell>
-                                            <TableCell sx={{ fontSize: '15pt' }} align='center'>Status</TableCell>
+                                            <TableCell sx={{ fontSize: '15pt' }} align="left">Название задачи</TableCell>
+                                            <TableCell sx={{ fontSize: '15pt' }} align="center">ID урожая</TableCell>
+                                            <TableCell sx={{ fontSize: '15pt' }} align='center'>Статус</TableCell>
                                             <TableCell sx={{ fontSize: '15pt' }} align='left'></TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -276,7 +276,7 @@ function DashboardContent() {
                                                         variant='contained'
                                                         disabled={task.status === "IN_PROGRESS"}
                                                         color={task.status === "HARVEST_DONE" ? "success" : "warning"}>
-                                                        Check
+                                                        Подтвердить
                                                     </Button>
                                                     <Modal
                                                         open={initOpen(task.id)}
@@ -285,17 +285,17 @@ function DashboardContent() {
                                                         aria-describedby={task.id + "descr"}
                                                     >
                                                         <Box sx={{ ...style, width: "50%" }}>
-                                                            {task.status === "HARVEST_DONE" ? <h2 id={task.id}>Submit harvesting</h2> : <h2 id={task.id}>Control warning</h2>}
+                                                            {task.status === "HARVEST_DONE" ? <h2 id={task.id}>Подтвердить сбор</h2> : <h2 id={task.id}>Control warning</h2>}
 
                                                             <p id={task.id + "descr"}>
-                                                                {task.status === "HARVEST_DONE" ? "Press 'Agree' if you want to submit harvesting. Control task and harvest task will be deleted for this harvest UUID" : "VIOLATIONS message shows that there are some problems with temp or humidity. Check task title"}
+                                                                {task.status === "HARVEST_DONE" ? "Нажмите 'Подтвердить', если согласны собрать урожай. Ячейки с этим растением будут очищены" : ""}
                                                             </p>
                                                             <Grid container maxWidth="lg" spacing={3}>
                                                                 <Grid item>
-                                                                    {task.status === "HARVEST_DONE" && <Button variant='contained' color="success" onClick={() => deleteTask(task.id)}>Agree</Button>}
+                                                                    {task.status === "HARVEST_DONE" && <Button variant='contained' color="success" onClick={() => deleteTask(task.id)}>Подтвердить</Button>}
                                                                 </Grid>
                                                                 <Grid item>
-                                                                    <Button variant='contained' color="error" onClick={() => handleClose(task.id)}>Close</Button>
+                                                                    <Button variant='contained' color="error" onClick={() => handleClose(task.id)}>Закрыть</Button>
                                                                 </Grid>
                                                             </Grid>
                                                         </Box>

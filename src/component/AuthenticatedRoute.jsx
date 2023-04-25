@@ -7,7 +7,7 @@ class AuthenticatedRoute extends Component {
         if (AuthenticationService.isUserLoggedIn()) {
             return <Outlet />
         } else {
-            console.log(AuthenticationService.isUserLoggedIn);
+            
             return <Navigate to="/login" />
         }
 

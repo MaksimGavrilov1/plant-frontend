@@ -78,7 +78,7 @@ export default function NewLoginComponent() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              Аутентификация
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
               <TextField
@@ -86,12 +86,12 @@ export default function NewLoginComponent() {
                 required
                 fullWidth
                 id="username"
-                label="Username"
+                label="Логин"
                 name="username"
-                autoComplete="username"
+                autoComplete="логин"
                 autoFocus
                 {...register('username', {
-                  required: "Username is required"
+                  required: "Это поле обязательно"
                 })}
               />
               <TextField
@@ -99,15 +99,15 @@ export default function NewLoginComponent() {
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label="Пароль"
                 type="password"
                 id="password"
                 autoComplete="current-password"
                 {...register('password', {
-                  required: "Password is required"
+                  required: "Это поле обязательно"
                 })}
                 error={errors?.title ? true : false}
-                helperText={errors?.title?.message || (failedLogin && <p style={{ color: 'red' }}>Wrong login or password</p>)}
+                helperText={errors?.title?.message || (failedLogin && <p style={{ color: 'red' }}>Неверный логин или пароль</p>)}
               />
               <Button
                 type="submit"
@@ -116,12 +116,12 @@ export default function NewLoginComponent() {
                 color='success'
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                Войти
               </Button>
               <Grid container>
                 <Grid item>
                   <Link href="/register" underline='none' sx={{ color: 'green' }}>
-                    {"Don't have an account? Sign Up"}
+                    {"Нет аккаунта? Регистрация"}
                   </Link>
                 </Grid>
               </Grid>

@@ -81,6 +81,7 @@ const mdTheme = createTheme();
 
 function DashboardContent() {
     const navigate = useNavigate();
+    const [validateFlag, setValidateFlag] = useState(true)
     const params = useParams();
     const plantId = params.plantId;
 
@@ -93,18 +94,37 @@ function DashboardContent() {
         name: "conditions"
     });
 
+    function validateData(data) {
+        let tempMax = parseInt(data.temperatureMax)
+        let tempMin = parseInt(data.temperatureMin)
+        let humMax = parseInt(data.humidityMax)
+        let humMin = parseInt(data.humidityMin)
+
+        if (tempMax <= tempMin) {
+            return false;
+        } else if (humMax <= humMin) {
+            return false;
+        }
+        return true;
+    }
+
     const onSubmit = (data) => {
-        fetch(API_URL + "/maps/create/" + plantId, {
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': sessionStorage.getItem(USER_TOKEN)
-                // 'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: JSON.stringify(data) // body data type must match "Content-Type" header
-        })
-        
-        navigate('/plants/view/' + plantId)
+        if (validateData(data)) {
+            fetch(API_URL + "/maps/create/" + plantId, {
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': sessionStorage.getItem(USER_TOKEN)
+                    // 'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: JSON.stringify(data) // body data type must match "Content-Type" header
+            })
+
+            navigate('/plants/view/' + plantId)
+        } else {
+            setValidateFlag(false)
+        }
+
     };
 
     const [devicesIds, setDevicesIds] = useState([]);
@@ -122,7 +142,6 @@ function DashboardContent() {
     const toggleDrawer = () => {
         setOpen(!open);
     };
-    console.log(devicesIds)
 
     return (
         <ThemeProvider theme={mdTheme}>
@@ -155,11 +174,7 @@ function DashboardContent() {
                         >
                             Технологические карты
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                        
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -241,8 +256,8 @@ function DashboardContent() {
                                                 helperText={errors?.title?.message}
                                             />
                                         </Grid>
-                                        
-                                        <Grid  container justifyContent="flex-end" xs={6} sx={{mt:2}}> 
+
+                                        <Grid container justifyContent="flex-end" xs={6} sx={{ mt: 2 }}>
                                             <TextField
 
                                                 required
@@ -262,19 +277,19 @@ function DashboardContent() {
                                                     },
                                                     min: {
                                                         value: 10,
-                                                        message: 'Min value is 10'
+                                                        message: 'Минимальное значение: 10'
                                                     },
                                                     maxLength: {
-                                                        value:4,
-                                                        message: 'Only within a tenth value'
+                                                        value: 4,
+                                                        message: 'Только с точностью до десятых'
                                                     }
                                                 })}
                                                 error={errors?.temperatureMin ? true : false}
                                                 helperText={errors?.temperatureMin?.message}
                                             />
                                         </Grid>
-                                       
-                                        <Grid xs={6} container justifyContent="flex-start" sx={{mt:2}}>
+
+                                        <Grid xs={6} container justifyContent="flex-start" sx={{ mt: 2 }}>
                                             <TextField
 
                                                 required
@@ -297,18 +312,18 @@ function DashboardContent() {
                                                     },
                                                     min: {
                                                         value: 10,
-                                                        message: 'Min value is 10'
+                                                        message: 'Минимальное значение: 10'
                                                     },
                                                     maxLength: {
-                                                        value:4,
-                                                        message: 'Only within a tenth value'
+                                                        value: 4,
+                                                        message: 'Только с точностью до десятых'
                                                     }
                                                 })}
                                                 error={errors?.temperatureMax ? true : false}
                                                 helperText={errors?.temperatureMax?.message}
                                             />
                                         </Grid>
-                                        <Grid container justifyContent="flex-end" xs={6} sx={{mt:2}}>
+                                        <Grid container justifyContent="flex-end" xs={6} sx={{ mt: 2 }}>
                                             <TextField
 
                                                 required
@@ -328,18 +343,18 @@ function DashboardContent() {
                                                     },
                                                     min: {
                                                         value: 0,
-                                                        message: 'Min value is 0'
+                                                        message: 'Минимальное значение: 0'
                                                     },
                                                     maxLength: {
-                                                        value:4,
-                                                        message: 'Only within a tenth value'
+                                                        value: 4,
+                                                        message: 'Только с точностью до десятых'
                                                     }
                                                 })}
                                                 error={errors?.humidityMin ? true : false}
                                                 helperText={errors?.humidityMin?.message}
                                             />
                                         </Grid>
-                                        <Grid  container justifyContent="flex-start" xs={6} sx={{mt:2}}>
+                                        <Grid container justifyContent="flex-start" xs={6} sx={{ mt: 2 }}>
                                             <TextField
 
                                                 required
@@ -359,18 +374,18 @@ function DashboardContent() {
                                                     },
                                                     min: {
                                                         value: 0,
-                                                        message: 'Min value is 0'
+                                                        message: 'Минимальное значение: 0'
                                                     },
                                                     maxLength: {
-                                                        value:4,
-                                                        message: 'Only within a tenth value'
+                                                        value: 4,
+                                                        message: 'Только с точностью до десятых'
                                                     }
                                                 })}
                                                 error={errors?.humidityMax ? true : false}
                                                 helperText={errors?.humidityMax?.message}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sx={{mt:2}}>
+                                        <Grid item xs={12} sx={{ mt: 2 }}>
                                             <TextField
 
 
@@ -386,7 +401,7 @@ function DashboardContent() {
                                                     required: "Это поле обязательно",
                                                     pattern: {
                                                         value: /^\d+$/,
-                                                        message: 'Only integer values'
+                                                        message: 'Только целочисленные значения'
                                                     },
                                                     max: {
                                                         value: 999,
@@ -394,25 +409,29 @@ function DashboardContent() {
                                                     },
                                                     min: {
                                                         value: 1.0,
-                                                        message: 'Min value is 1'
+                                                        message: 'Минимальное значение: 1'
                                                     }
 
                                                 })}
                                                 error={errors?.growthPeriod ? true : false}
                                                 helperText={errors?.growthPeriod?.message}
                                             />
+                                            <Typography color={"red"} sx={{mt:2}}>
+                                            {!validateFlag && "Некорректные значения минимумов и максимумов"}
+                                            </Typography>
                                         </Grid>
+
                                     </Grid>
                                     <Grid item xs={12} sx={{ padding: 0 }}>
                                         <Typography component="h3" variant="h5" align='left'>
-                                            Дополнительные условия
+                                          Дополнительные условия
                                         </Typography>
                                         <Divider></Divider>
                                     </Grid>
                                     <Grid item xs={12} >
                                         {fields.map((item, index) => {
                                             return (
-                                                <Grid container spacing={3} key={item.id} sx={{mt:1}}>
+                                                <Grid container spacing={3} key={item.id} sx={{ mt: 1 }}>
                                                     <Grid item xs={8}>
                                                         <TextField
                                                             // sx={{ mt: 3 }}

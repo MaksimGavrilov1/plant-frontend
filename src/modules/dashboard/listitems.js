@@ -8,33 +8,39 @@ import WarehouseIcon from '@mui/icons-material/Warehouse';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import DangerousIcon from '@mui/icons-material/Dangerous';
 
 
 export const mainListItems = [
   {
-    text: "Containers",
+    text: "Помещения",
     icon: <WarehouseIcon />,
     to: "/containers" // <-- add link targets
   },
   {
-    text: "Plants",
+    text: "Растения",
     icon: <GrassIcon />,
     to: "/plants" // <-- add link targets
   },
   {
-    text: "Devices",
+    text: "Устройства",
     icon: <SettingsIcon />,
     to: "/devices/all"
   },
   {
-    text: "Tasks",
+    text: "Задачи",
     icon: <AssignmentIcon/>,
     to: "/tasks"
   },
   {
-    text: "History",
+    text: "История",
     icon: <HistoryEduIcon/>,
     to: "/history"
+  },
+  {
+    text: "Нарушения",
+    icon: <DangerousIcon/>,
+    to: "/violations"
   }
   
 ]
@@ -42,7 +48,7 @@ export const mainListItems = [
 export const secondaryListItems = (
   <React.Fragment>
     <ListSubheader component="div" inset>
-      Saved reports
+      
     </ListSubheader>
     
   </React.Fragment>

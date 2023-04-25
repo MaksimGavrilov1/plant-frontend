@@ -107,8 +107,7 @@ function DashboardContent() {
         var fr = new FileReader();
         convertBlobToBase64(selectedImage)
         .then((result) => {
-            newData.picture = result;
-            console.log(newData);
+            newData.picture = result;        
             fetch(API_URL + "/plants/create", {
                 method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 headers: {
@@ -120,11 +119,7 @@ function DashboardContent() {
             })
             navigate('/plants')
         })
-        // console.log(URL.createObjectURL(selectedImage).length)
-        // fetch(URL.createObjectURL(selectedImage)).
-        //     then(function(response) {
-        //         console.log(response.blob)
-        //     })
+        
         
     };
 
@@ -172,11 +167,7 @@ function DashboardContent() {
                         >
                             Растения
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                        
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -250,7 +241,7 @@ function DashboardContent() {
 
                                             autoComplete="title"
                                             {...register('title', {
-                                                required: "Название является обязательным полем"
+                                                required: "Это поле обязательно"
                                             })}
                                             error={errors?.title ? true : false}
                                             helperText={errors?.title?.message}
@@ -277,7 +268,9 @@ function DashboardContent() {
                                                 type="file"
                                                 id="picture"
                                                 style={{ display: "none" }}
-                                                {...register('picture')}
+                                                {...register('picture', {
+                                                    required: "Это поле обязательно"
+                                                })}
                                                 onChange={(e) => setSelectedImage(e.target.files[0])}
                                             />
                                             {imageUrl && selectedImage && (
@@ -287,6 +280,7 @@ function DashboardContent() {
                                                 </Box>
                                             )}
                                             <label htmlFor="picture">
+                                                
                                                 <Button variant="contained" size="small" color="secondary" component="span">
                                                     Загрузить изображение
                                                 </Button>
@@ -294,8 +288,9 @@ function DashboardContent() {
                                             
                                         </>
                                     </Grid>
-
+                                    
                                 </Grid>
+                                {errors?.picture && <Typography sx={{mt:2}} color={"red"}>Это поле обязательно</Typography>}
                                 <Button
                                     type="submit"
                                     fullWidth

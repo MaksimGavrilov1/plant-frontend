@@ -76,28 +76,28 @@ export default function RegisterForm() {
             
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Регистрация
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  autoComplete="given-name"
+                  autoComplete="Имя"
                   name="firstName"
                   required
                   fullWidth
                   id="firstName"
-                  label="First Name"
+                  label="Имя"
                   autoFocus
-                  {...register('firstName', { required: "First name is required", minLength: {
+                  {...register('firstName', { required: "Это поле обязательно", minLength: {
                     value: 2,
-                    message: 'First name  length should be less than 2 symbols'
+                    message: 'Не менее 2х символов'
                   }, maxLength: {
                     value: 50,
-                    message: 'First name length should be more than 50 symbols'
+                    message: 'Не более 50 символов'
                   }, pattern: {
-                    value: /^[a-zA-Z]+$/,
-                    message: 'First name should contain only english alphabet'
+                    value: /^[a-zA-Zа-яА-Я]+$/,
+                    message: 'Только символы английского или русского алфавита'
                   }  })}
                   error={errors?.firstName ? true: false}
                   helperText={errors?.firstName?.message}
@@ -108,18 +108,18 @@ export default function RegisterForm() {
                   required
                   fullWidth
                   id="lastName"
-                  label="Last Name"
+                  label="Фамилия"
                   name="lastName"
-                  autoComplete="family-name"
-                  {...register('lastName', { required: "Last Name is required", minLength: {
+                  autoComplete="Фамилия"
+                  {...register('lastName', { required: "Это поле обязательно", minLength: {
                     value: 2,
-                    message: 'Last Name  length should be less than 2 symbols'
+                    message: 'Не менее 2х символов'
                   }, maxLength: {
                     value: 50,
-                    message: 'Last Name length should be more than 50 symbols'
+                    message: 'Не более 50 символов'
                   }, pattern: {
-                    value: /^[a-zA-Z]+$/,
-                    message: 'Last Name should contain only english alphabet'
+                    value: /^[a-zA-Zа-яА-Я]+$/,
+                    message: 'Только символы английского или русского алфавита'
                   }  })}
                   error={errors?.lastName ? true: false}
                   helperText={errors?.lastName?.message}
@@ -129,18 +129,18 @@ export default function RegisterForm() {
                 <TextField
                   fullWidth
                   id="middleName"
-                  label="Middle Name"
+                  label="Отчество"
                   name="middleName"
-                  autoComplete="middleName"
+                  autoComplete="Отчество"
                   {...register('middleName', { minLength: {
                     value: 2,
-                    message: 'Middle Name  length should be less than 2 symbols'
+                    message: 'Не менее 2х символов'
                   }, maxLength: {
                     value: 50,
-                    message: 'Middle Namelength should be more than 50 symbols'
+                    message: 'Не более 50 символов'
                   }, pattern: {
-                    value: /^[a-zA-Z]+$/,
-                    message: 'Middle Name should contain only english alphabet'
+                    value: /^[a-zA-Zа-яА-Я]+$/,
+                    message: 'Только символы английского или русского алфавита'
                   }  })}
                   error={errors?.middleName ? true: false}
                   helperText={errors?.middleName?.message}
@@ -151,21 +151,21 @@ export default function RegisterForm() {
                   required
                   fullWidth
                   id="username"
-                  label="Username"
+                  label="Логин"
                   name="username"
                 
-                  autoComplete="username"
-                  {...register('username', { required: "Username is required", minLength: {
+                  autoComplete="Логин"
+                  {...register('username', { required: "Это поле обязательно", minLength: {
                     value: 8,
-                    message: 'Username length should be less than 8 symbols'
+                    message: 'Не менее 8 символов'
                   }, maxLength: {
                     value: 20,
-                    message: 'Username length should be more than 20 symbols'
+                    message: 'Не более 20 символов'
                   }, validate: {
-                    noWhiteSpace: v=> !v.trim().includes(' ') || 'Username should not contain whitespace'
+                    noWhiteSpace: v=> !v.trim().includes(' ') || 'Логин не должен содержать пробелов'
                   }  })}
                   error={errors?.username ? true: false}
-                  helperText={errors?.username?.message || (usernameExists && <Typography sx={{fontSize:13, p:0, m:0}} class="Mui-error" color="#d32f2f">Username already exists</Typography>)}
+                  helperText={errors?.username?.message || (usernameExists && <Typography sx={{fontSize:13, p:0, m:0}} class="Mui-error" color="#d32f2f">Такой логин уже существует</Typography>)}
                    
                 />
               </Grid>
@@ -174,19 +174,19 @@ export default function RegisterForm() {
                   required
                   fullWidth
                   name="password"
-                  label="Password"
+                  label="Пароль"
                   type="password"
                   id="password"
                   
-                  autoComplete="new-password"
-                  {...register('password', { required: "Password is required", minLength: {
+                  autoComplete="Пароль"
+                  {...register('password', { required: "Это поле обязательно", minLength: {
                     value: 8,
-                    message: 'Password length should be less than 8 symbols'
+                    message: 'Не менее 8 символов'
                   }, maxLength: {
                     value: 70,
-                    message: 'Password length should be more than 20 symbols'
+                    message: 'Не более 70 символов'
                   }, validate: {
-                    noWhiteSpace: v=> !v.trim().includes(' ') || 'Password should not contain whitespace'
+                    noWhiteSpace: v=> !v.trim().includes(' ') || 'Пароль не должен содержать пробелов'
                   }  })}
                   error={errors?.password ? true: false}
                   helperText={errors?.password?.message}
@@ -197,14 +197,14 @@ export default function RegisterForm() {
                   required
                   fullWidth
                   name="confirmPassword"
-                  label="Confirm Password"
+                  label="Подтверждение пароля"
                   type="password"
                   id="confirmPassword"
-                  autoComplete="confirm-password"
-                  {...register('confirmPassword', { required: "Confirm password is required", validate: {
+                  autoComplete="Подтверждение пароля"
+                  {...register('confirmPassword', { required: "Подтверждение пароля обязательно", validate: {
                     messages: (val) => {
                         if (watch('password') != val) {
-                            return 'Your passwords do not match'
+                            return 'Пароли не совпадают'
                         }
                     }
                   }  })}
@@ -220,7 +220,7 @@ export default function RegisterForm() {
               color="success"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+              Зарегистрироваться
             </Button>
             
           </Box>
@@ -228,7 +228,7 @@ export default function RegisterForm() {
         <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="#" onClick={handleClick} underline="none"  sx={{color:'green'}} >
-                  Already have an account? Sign in
+                  Уже есть аккаунт? Войти
                 </Link>
               </Grid>
             </Grid>

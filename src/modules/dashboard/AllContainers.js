@@ -124,13 +124,9 @@ function DashboardContent() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            Containers
+                            Помещения
                         </Typography>
-                        <IconButton color="inherit">
-                            <Badge badgeContent={4} color="secondary">
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
+                        
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -185,12 +181,12 @@ function DashboardContent() {
                                 color="text.primary"
                                 gutterBottom
                             >
-                                Containers
+                                Помещения
                             </Typography>
                             <Typography variant="h5" align="center" color="text.secondary" component="p">
-                                You can find all your containers at this page. If you don't have one, you can create it by pushing the button below.
+                                Здесь вы можете найти доступные вам помещения. Если необходимо создать помещение, то можно нажать кнопку ниже.
                             </Typography>
-                            <Button color='success' sx={{  mt:3 }} variant="contained" size='large' onClick={()=>{navigate('/containers/create')}}>Create container</Button>
+                            <Button color='success' sx={{  mt:3 }} variant="contained" size='large' onClick={()=>{navigate('/containers/create')}}>Создать помещение</Button>
                         </Container>
                         <Divider></Divider>
                         <Grid container spacing={0} alignItems="center" justifyContent="space-around">

@@ -18,22 +18,18 @@ import { mainListItems, secondaryListItems } from '../dashboard/listitems';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { Link, useNavigate } from 'react-router-dom';
-import secureGetFetch from '../../service/CustomFetch';
-import Collapse from '@mui/material/Collapse';
+import { Link } from 'react-router-dom';
+import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import ListItem from '@mui/material/ListItem';
-import LabelIcon from '@mui/icons-material/Label';
 import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import Container from '@mui/material/Container';
+import secureGetFetch from '../../service/CustomFetch';
 
 const drawerWidth = 240;
 
@@ -83,116 +79,24 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const mdTheme = createTheme();
 
-
-function Row(props) {
-    const { row } = props;
-    const [open, setOpen] = React.useState(false);
-
-    return (
-        <React.Fragment>
-            <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-
-                <TableCell >
-                    <IconButton
-                        aria-label="expand row"
-                        size="small"
-                        onClick={() => setOpen(!open)}
-                    >
-                        {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-                    </IconButton>
-                </TableCell>
-                <TableCell component="th" scope="row" align="left">
-                    <Typography component="h2"
-                        variant="h6"
-                        color="inherit"
-                        align="inherit"
-                        style={{ wordWrap: "break-word" }}
-                        sx={{ flexGrow: 1 }}>
-                        {"ID урожая: " + row.harvestUUID}
-                    </Typography>
-                    <Typography
-                        component="h2"
-                        variant="h6"
-                        color="inherit"
-                        align="inherit"
-                        style={{ wordWrap: "break-word" }}
-                        sx={{ flexGrow: 1 }}>
-                        {" Дата посадки: " + row.dateOfPlant}
-                    </Typography>
-
-                </TableCell>
-            </TableRow>
-            <TableRow>
-                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                    <Collapse in={open} timeout="auto" unmountOnExit>
-                        <Box sx={{ margin: 1 }}>
-                            <Typography variant="h6" gutterBottom component="div">
-                                Информация
-                            </Typography>
-                            <Table size="small" aria-label="purchases">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Помещение</TableCell>
-                                        <TableCell>Название установки</TableCell>
-                                        <TableCell >Растение</TableCell>
-                                        <TableCell >Тех. карта</TableCell>
-
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell>
-                                            {row.containerTitle}
-                                        </TableCell>
-                                        <TableCell>
-                                            {row.setupAddress}
-                                        </TableCell>
-                                        <TableCell>
-                                            {row.plantTitle}
-                                        </TableCell>
-                                        <TableCell>
-                                            {row.techMapTitle}
-                                        </TableCell>
-                                    </TableRow>
-
-                                </TableBody>
-                            </Table>
-                            <Typography
-                            sx={{m:2}}>
-                                ID ячеек: 
-                                {row.cellsIds.map((id) => (
-                                               id + " "
-                                            ))}
-                            </Typography>
-
-                        </Box>
-                    </Collapse>
-                </TableCell>
-            </TableRow>
-        </React.Fragment>
-    );
-}
-
 function DashboardContent() {
     const navigate = useNavigate();
-    const [historyRows, setHistoryRows] = useState([]);
+    const [violations, setViolations] = useState([]);
     useEffect(() => {
-        secureGetFetch("http://localhost:8080/history/all")
-            .then(res => res.json())
-            .then((result) => {
-
-                result.forEach(element => {
-                    
-                    var temp = new Date(element.dateOfPlant)
-                    element.dateOfPlant = temp.toLocaleString("ru-RU");
-                });
-                setHistoryRows(result);
-            }
-            )
-    }, [])
-
-    useEffect(() => {
-
+        secureGetFetch("http://localhost:8080/violations")
+        .then(res => res.json())
+        .then((result) => {
+           
+            result.forEach(element => {
+                var date = new Date(element.timeOfViolation)
+                // const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                element.timeOfViolation = date.toLocaleString("ru-RU")
+                //date.customFormat("#DD#/#MM# #hh#:#mm#:#ss#")
+            });
+            setViolations(result);
+            
+        }
+        )
     }, [])
     const [open, setOpen] = useState(false);
     const toggleDrawer = () => {
@@ -229,7 +133,7 @@ function DashboardContent() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            История
+                            Нарушения
                         </Typography>
                         
                     </Toolbar>
@@ -269,7 +173,7 @@ function DashboardContent() {
                     sx={{
                         backgroundColor: (theme) =>
                             theme.palette.mode === 'light'
-                                ? theme.palette.grey[100]
+                                ? theme.palette.grey[0]
                                 : theme.palette.grey[900],
                         flexGrow: 1,
                         height: '100vh',
@@ -281,30 +185,54 @@ function DashboardContent() {
                         variant="h1"
                         color="inherit"
                         align='left'
-                        sx={{ flexGrow: 1, fontSize: '26pt', ml: 2, mt: 4 }}>
-                        История
+                        sx={{ flexGrow: 1, fontSize: '26pt', ml:2, mt:4 }}>
+                        Нарушения
                         <Divider sx={{ mb: 4 }}></Divider>
-                        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-                            <Grid item xs={12}>
-                                <TableContainer component={Paper} sx={{ mt: 3 }}>
-                                    <Table aria-label="collapsible table">
-
-                                        <TableBody>
-                                            {historyRows && historyRows.map((rows) => (
-                                                <Row key={rows.harvestUUID} row={rows} />
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </Grid>
-                        </Container>
                     </Typography>
+
+                    <Container maxWidth="false" sx={{ mt: 4, mb: 4 }}>
+                        <Grid item xs={12}>
+
+
+                            <TableContainer >
+                                <Table sx={{ minWidth: 800 }} aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell sx={{ fontSize: '15pt' }} align="left">#</TableCell>
+                                            <TableCell sx={{ fontSize: '15pt' }} align="left">Сообщение</TableCell>
+                                            <TableCell sx={{ fontSize: '15pt' }} align='center'>Время нарушения</TableCell>
+                                            <TableCell sx={{ fontSize: '15pt' }} align="center">ID посадки</TableCell>
+                                            <TableCell sx={{ fontSize: '15pt' }} align='center'>Название помещения</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {violations && violations.map((viol, index) => (
+                                            <TableRow
+                                                key={viol.id}
+                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                            >
+                                                <TableCell sx={{ fontSize: '15pt' }} component="th" scope="row">
+                                                    {index + 1}
+                                                </TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align="left">{viol.message}</TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align="center">{viol.timeOfViolation}</TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align="center">{viol.harvestUUID}</TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align="center">{viol.containerTitle}</TableCell>
+                                                {/* <TableCell><Button sx={{ color: "green" }} onClick={() => { navigate('/setup/view/' + setup.id) }} size="large">Check</Button></TableCell> */}
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+
+                        </Grid>
+                    </Container>
                 </Box>
             </Box>
         </ThemeProvider>
     );
 }
 
-export default function History() {
+export default function ViewViolations() {
     return <DashboardContent />;
 }
