@@ -30,6 +30,9 @@ import TableRow from '@mui/material/TableRow';
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import secureGetFetch from '../../service/CustomFetch';
+import { USER_TOKEN, API_URL } from '../../service/AuthenticationService';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 const drawerWidth = 240;
 
@@ -82,22 +85,59 @@ const mdTheme = createTheme();
 function DashboardContent() {
     const navigate = useNavigate();
     const [violations, setViolations] = useState([]);
+    const [tempViols, setTempViols] = useState([]);
+    const [updateFlag, setUpdateFlag] = useState(false);
+    const [alignment, setAlignment] = React.useState('');
+    const [emptyFlag, setEmptyFlag] = useState(true);
+
+    const handleChange = (event, newAlignment) => {
+        let temp = violations;
+        if (newAlignment === "checked") {
+            temp = temp.filter(viol => viol.isChecked);
+            setTempViols(temp)
+        } else if (newAlignment === "active") {
+            temp = temp.filter(viol => !viol.isChecked)
+            if (temp.length === 0) {
+                setEmptyFlag(false)
+            }
+            setTempViols(temp)
+        } else {
+            setTempViols(violations)
+        }
+        setAlignment(newAlignment);
+        setUpdateFlag(!updateFlag)
+    };
+
+    function checkViolation(id) {
+        fetch(API_URL + "/violations/check", {
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': sessionStorage.getItem(USER_TOKEN)
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: JSON.stringify(id) // body data type must match "Content-Type" header
+        }).then((result) => {
+            let val = updateFlag;
+            setUpdateFlag(!val)
+        })
+    }
+
     useEffect(() => {
         secureGetFetch("http://localhost:8080/violations")
-        .then(res => res.json())
-        .then((result) => {
-           
-            result.forEach(element => {
-                var date = new Date(element.timeOfViolation)
-                // const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                element.timeOfViolation = date.toLocaleString("ru-RU")
-                //date.customFormat("#DD#/#MM# #hh#:#mm#:#ss#")
-            });
-            setViolations(result);
-            
-        }
-        )
-    }, [])
+            .then(res => res.json())
+            .then((result) => {
+                
+                result.forEach(element => {
+                    var date = new Date(element.timeOfViolation)
+                    // const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                    element.timeOfViolation = date.toLocaleString("ru-RU")
+                    //date.customFormat("#DD#/#MM# #hh#:#mm#:#ss#")
+                });
+                setViolations(result);
+            }
+            )
+    }, [updateFlag])
     const [open, setOpen] = useState(false);
     const toggleDrawer = () => {
         setOpen(!open);
@@ -135,7 +175,7 @@ function DashboardContent() {
                         >
                             Нарушения
                         </Typography>
-                        
+
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -185,12 +225,33 @@ function DashboardContent() {
                         variant="h1"
                         color="inherit"
                         align='left'
-                        sx={{ flexGrow: 1, fontSize: '26pt', ml:2, mt:4 }}>
+                        sx={{ flexGrow: 1, fontSize: '26pt', ml: 2, mt: 4 }}>
                         Нарушения
-                        <Divider sx={{ mb: 4 }}></Divider>
-                    </Typography>
 
+
+                    </Typography>
+                    <Typography component="h4"
+                        variant="h4"
+                        color="inherit"
+                        align='left'
+                        sx={{ flexGrow: 1, fontSize: '16pt', ml: 2, mt: 4, color: "gray" }}>
+                        Несовпадение данных из технологической карты и актуальных климатических параметров приводит к созданию нарушений. Журналирование подобных ситуаций помогает поддерживать контроль роста культур. Уведомления будут активны до тех пор, пока вы не подтвердите нарушение.
+                    </Typography>
+                    <Divider sx={{ mb: 4 }}></Divider>
                     <Container maxWidth="false" sx={{ mt: 4, mb: 4 }}>
+                        <Grid item xs={12} align="left">
+                            <ToggleButtonGroup
+                                color="primary"
+                                value={alignment}
+                                exclusive
+                                onChange={handleChange}
+                                aria-label="Platform"
+                            >
+                                <ToggleButton color='success' value="checked">Просмотренные</ToggleButton>
+                                <ToggleButton color="error" value="active">Активные</ToggleButton>
+                            </ToggleButtonGroup>
+                        </Grid>
+
                         <Grid item xs={12}>
 
 
@@ -206,7 +267,7 @@ function DashboardContent() {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {violations && violations.map((viol, index) => (
+                                        {tempViols.length != 0 || !emptyFlag ? (tempViols.map((viol, index) => (
                                             <TableRow
                                                 key={viol.id}
                                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -218,9 +279,26 @@ function DashboardContent() {
                                                 <TableCell sx={{ fontSize: '15pt' }} align="center">{viol.timeOfViolation}</TableCell>
                                                 <TableCell sx={{ fontSize: '15pt' }} align="center">{viol.harvestUUID}</TableCell>
                                                 <TableCell sx={{ fontSize: '15pt' }} align="center">{viol.containerTitle}</TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align="center">{<Button variant='contained' disabled={viol.isChecked} onClick={() => checkViolation(viol.id)} color='success'>Подтвердить</Button>}</TableCell>
+                                                {/* <TableCell><Button sx={{ color: "green" }} onClick={() => { navigate('/setup/view/' + setup.id) }} size="large">Check</Button></TableCell> */}
+                                            </TableRow>
+                                        ))) : violations.map((viol, index) => (
+                                            <TableRow
+                                                key={viol.id}
+                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                            >
+                                                <TableCell sx={{ fontSize: '15pt' }} component="th" scope="row">
+                                                    {index + 1}
+                                                </TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align="left">{viol.message}</TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align="center">{viol.timeOfViolation}</TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align="center">{viol.harvestUUID}</TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align="center">{viol.containerTitle}</TableCell>
+                                                <TableCell sx={{ fontSize: '15pt' }} align="center">{<Button variant='contained' disabled={viol.isChecked} onClick={() => checkViolation(viol.id)} color='success'>Подтвердить</Button>}</TableCell>
                                                 {/* <TableCell><Button sx={{ color: "green" }} onClick={() => { navigate('/setup/view/' + setup.id) }} size="large">Check</Button></TableCell> */}
                                             </TableRow>
                                         ))}
+                                        
                                     </TableBody>
                                 </Table>
                             </TableContainer>

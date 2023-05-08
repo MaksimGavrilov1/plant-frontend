@@ -33,6 +33,7 @@ import secureGetFetch from '../../service/CustomFetch';
 import { USER_TOKEN, API_URL } from '../../service/AuthenticationService';
 import Modal from '@mui/material/Modal';
 
+
 const drawerWidth = 240;
 
 const style = {
@@ -151,7 +152,7 @@ function DashboardContent() {
             },
             body: JSON.stringify(taskId) // body data type must match "Content-Type" header
         })
-        navigate("/tasks")
+        navigate("/containers")
         
     }
 
@@ -244,8 +245,22 @@ function DashboardContent() {
                         align='left'
                         sx={{ flexGrow: 1, fontSize: '26pt', ml: 2, mt: 4 }}>
                         Задачи
-                        <Divider sx={{ mb: 4 }}></Divider>
+                        
                     </Typography>
+                    
+                    <Typography component="h4"
+                        variant="h4"
+                        color="inherit"
+                        align='left'
+                        sx={{ flexGrow: 1, fontSize: '16pt', ml: 2, mt: 4, color:'gray' }}>
+                        При посадке растения создается задача, которая будет сигнализировать о готовности сбора урожая. Задачи имеют два статуса:
+                        <ul>
+                            <li>IN_PROGRESS - растение находится в процессе роста и еще не готово к сбору</li>
+                            <li>HARVEST_DONE - растение готово к сбору</li>
+                        </ul>
+                        
+                    </Typography>
+                    <Divider sx={{ mb: 4 }}></Divider>
                     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                         <Grid item xs={12}>
 

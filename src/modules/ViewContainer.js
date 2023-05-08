@@ -113,7 +113,7 @@ function ContainerDashboard() {
     const containerId = params.containerId;
     const navigate = useNavigate();
     const [containerItem, setContainerItem] = useState({});
-    const [data, setData] = useState([])
+    const [data, setData] = useState()
     const [constantData, setConstantData] = useState();
     const [flag, setFlag] = useState(false)
     let isLoaded = false;
@@ -131,7 +131,7 @@ function ContainerDashboard() {
         })
             .then(res => res.json())
             .then((result) => {
-                
+
                 if (result) {
                     navigate("/containers")
                 } else {
@@ -155,7 +155,7 @@ function ContainerDashboard() {
         secureGetFetch("http://localhost:8080/device/data/" + containerId)
             .then(res => res.json())
             .then((result) => {
-
+                console.log(result)
                 result.forEach(element => {
                     var date = new Date(element.time)
                     // const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -163,6 +163,7 @@ function ContainerDashboard() {
                     //date.customFormat("#DD#/#MM# #hh#:#mm#:#ss#")
                 });
                 setData(result);
+
                 var temp = (result.filter((element) => element.status === "CONSTANT" ? true : false))[0]
                 setConstantData(temp)
 
@@ -211,7 +212,7 @@ function ContainerDashboard() {
                         >
                             Помещения
                         </Typography>
-                        
+
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -307,8 +308,13 @@ function ContainerDashboard() {
                                         {containerItem.description}
                                     </Typography>
                                 </Paper>
+                                {data && data.length == 0 && <Typography sx={{m:1}} color={"red"}>
+                                    Проблемы с соединением. Проверьте правильность введенных данных на вкладке "Устройства"
+                                </Typography>}
                             </Grid>
+
                             <Grid item xs={12} md={7} lg={8}>
+
                                 <Paper
                                     sx={{
                                         p: 2,

@@ -204,7 +204,7 @@ function DashboardContent() {
                                             </Typography>
                                         </CardContent>
                                         <CardActions >
-                                            <Button sx={{color:"green"}} onClick={()=>{navigate('/containers/view/' + container.id)}} size="large">Check</Button>
+                                            <Button sx={{color:"green"}} onClick={()=>{navigate('/containers/view/' + container.id)}} size="large">Подробнее</Button>
                                         </CardActions>
                                     </Card>
                                 </Grid>

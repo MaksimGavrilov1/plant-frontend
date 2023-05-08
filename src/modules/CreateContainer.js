@@ -216,6 +216,7 @@ function DashboardContent() {
                             <Typography component="h1" variant="h5">
                                 Создание помещения
                             </Typography>
+                            {devicesIds.length == 0 ? <Typography color={"red"}>Внимание! На данный момент нет свободных устройств. Вы не можете создать помещение без устройства. Создайте его, либо освободите помещение с устройством</Typography> : ""}
                             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 3 }}>
                                 <Grid container spacing={5}>
                                     <Grid item xs={12}>
@@ -272,7 +273,7 @@ function DashboardContent() {
                                     type="submit"
                                     fullWidth
                                     variant="contained"
-
+                                    disabled={devicesIds.length == 0}
                                     sx={{ mt: 3, mb: 2 }}
                                 >
                                     Создать

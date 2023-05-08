@@ -10,10 +10,8 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import { mainListItems, secondaryListItems } from '../dashboard/listitems';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -29,11 +27,12 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import ListItem from '@mui/material/ListItem';
-import LabelIcon from '@mui/icons-material/Label';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Container from '@mui/material/Container';
+import { DatePicker } from '@mui/x-date-pickers';
+import { TextField } from '@mui/material';
+import Button from '@mui/material/Button';
 
 const drawerWidth = 240;
 
@@ -117,7 +116,7 @@ function Row(props) {
                         align="inherit"
                         style={{ wordWrap: "break-word" }}
                         sx={{ flexGrow: 1 }}>
-                        {" Дата посадки: " + row.dateOfPlant}
+                        {" Дата посадки: " + new Date(row.dateOfPlant).toLocaleString("ru-RU")}
                     </Typography>
 
                 </TableCell>
@@ -158,11 +157,11 @@ function Row(props) {
                                 </TableBody>
                             </Table>
                             <Typography
-                            sx={{m:2}}>
-                                ID ячеек: 
+                                sx={{ m: 2 }}>
+                                ID ячеек:
                                 {row.cellsIds.map((id) => (
-                                               id + " "
-                                            ))}
+                                    id + " "
+                                ))}
                             </Typography>
 
                         </Box>
@@ -176,29 +175,90 @@ function Row(props) {
 function DashboardContent() {
     const navigate = useNavigate();
     const [historyRows, setHistoryRows] = useState([]);
+    const [tempRows, setTempRows] = useState([])
+    const [tempFlag, setTempFlag] = useState(false)
+    const [dateBefore, setDateBefore] = useState(null);
+    const [dateAfter, setDateAfter] = useState(null);
+    const [harvestId, setHarvestId] = useState('');
+    const [tempArr, setTempArr] = useState();
+
+
+
     useEffect(() => {
         secureGetFetch("http://localhost:8080/history/all")
             .then(res => res.json())
             .then((result) => {
 
                 result.forEach(element => {
-                    
-                    var temp = new Date(element.dateOfPlant)
-                    element.dateOfPlant = temp.toLocaleString("ru-RU");
+
+                    // var temp = new Date(element.dateOfPlant)
+                    // element.dateOfPlant = temp.toLocaleString("ru-RU");
                 });
                 setHistoryRows(result);
             }
             )
     }, [])
 
-    useEffect(() => {
-
-    }, [])
     const [open, setOpen] = useState(false);
     const toggleDrawer = () => {
         setOpen(!open);
     };
 
+    function search() {
+        setTempFlag(true)
+        let temp;
+        if (dateAfter == null && dateBefore == null && harvestId == '') {
+            temp = historyRows
+        } else {
+            try {
+                if (harvestId == '') {
+                    console.log(harvestId)
+                    temp = historyRows.filter((item) => {
+                        return new Date(item.dateOfPlant).getTime() >= Date.parse(dateAfter.toString()) &&
+                            new Date(item.dateOfPlant).getTime() <= Date.parse(dateBefore.toString());
+                    });
+                } else {
+                    temp = historyRows.filter((item) => {
+                        return new Date(item.dateOfPlant).getTime() >= Date.parse(dateAfter.toString()) &&
+                            new Date(item.dateOfPlant).getTime() <= Date.parse(dateBefore.toString()) &&
+                            item.harvestUUID == harvestId
+                    });
+                }
+            } catch {
+                if (dateAfter == null && dateBefore == null && harvestId != '') {
+                    temp = historyRows.filter((item) => {
+                        return item.harvestUUID == harvestId;
+                    });
+                }
+                else if (dateAfter == null && harvestId == '') {
+                    temp = historyRows.filter((item) => {
+                        return new Date(item.dateOfPlant).getTime() <= Date.parse(dateBefore.toString());
+                    });
+                } else if (dateBefore == null && harvestId == '') {
+                    temp = historyRows.filter((item) => {
+                        return new Date(item.dateOfPlant).getTime() >= Date.parse(dateAfter.toString());
+                    });
+                } else if (dateAfter == null && harvestId != '') {
+                    temp = historyRows.filter((item) => {
+                        console.log(harvestId)
+                        console.log(item.harvestUUID)
+                        return new Date(item.dateOfPlant).getTime() <= Date.parse(dateBefore.toString()) &&
+                            item.harvestUUID == harvestId
+                    });
+                } else if (dateBefore == null && harvestId != '') {
+                    temp = historyRows.filter((item) => {
+                        return new Date(item.dateOfPlant).getTime() >= Date.parse(dateAfter.toString()) &&
+                            item.harvestUUID == harvestId
+                    });
+                }
+            }
+        }
+        setTempRows(temp)
+        console.log(temp)
+
+
+
+    }
 
     return (
         <ThemeProvider theme={mdTheme}>
@@ -231,7 +291,7 @@ function DashboardContent() {
                         >
                             История
                         </Typography>
-                        
+
                     </Toolbar>
                 </AppBar>
                 <Drawer variant="permanent" open={open}>
@@ -283,22 +343,58 @@ function DashboardContent() {
                         align='left'
                         sx={{ flexGrow: 1, fontSize: '26pt', ml: 2, mt: 4 }}>
                         История
-                        <Divider sx={{ mb: 4 }}></Divider>
-                        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-                            <Grid item xs={12}>
-                                <TableContainer component={Paper} sx={{ mt: 3 }}>
-                                    <Table aria-label="collapsible table">
-
-                                        <TableBody>
-                                            {historyRows && historyRows.map((rows) => (
-                                                <Row key={rows.harvestUUID} row={rows} />
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </Grid>
-                        </Container>
+                        
                     </Typography>
+                    <Typography component="h4"
+                        variant="h4"
+                        color="inherit"
+                        align='left'
+                        sx={{ flexGrow: 1, fontSize: '16pt', ml: 2, mt: 4, color:"gray" }}>
+                        Каждая посадка растений записывается в истории в виде набора данных. Используя поиск, можно находить необходимые записи. Каждая запись в истории содержит данные о растении, технологической карте, помещении, установке, а также данные об ID ячеек, которые были использованы для посадки. История сохраняется после удаления установок и помещений.
+                        
+                    </Typography>
+                    <Divider sx={{ mb: 4 }}></Divider>
+                    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+                        <Paper align="center">
+                            <Grid item xs={12} >
+                                <Typography sx={{ ml: 4 }} align='left' component={"h4"} variant='h4'>
+                                    Поиск
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <DatePicker value={dateAfter} onChange={(newVal) => setDateAfter(newVal)} label="Начиная с" sx={{ m: 2 }}></DatePicker>
+                                <DatePicker value={dateBefore} onChange={(newVal) => setDateBefore(newVal)} label="До" sx={{ m: 2 }}></DatePicker>
+
+                            </Grid>
+                            <Grid item xs={12}>
+
+                                <TextField
+                                    label="ID урожая"
+                                    onChange={(event) => { setHarvestId(event.target.value) }}
+                                >
+
+                                </TextField>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button onClick={() => search()} color='success' variant='contained' sx={{ m: 2 }}>Поиск</Button>
+                            </Grid>
+                        </Paper>
+                        <Grid item xs={12}>
+                            <TableContainer component={Paper} sx={{ mt: 3 }}>
+                                <Table aria-label="collapsible table">
+
+                                    <TableBody>
+                                        {tempFlag == true ? tempRows.map((rows) => (
+                                            <Row key={rows.harvestUUID} row={rows} />
+                                        )) : historyRows.map((rows) => (
+                                            <Row key={rows.harvestUUID} row={rows} />
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Grid>
+                    </Container>
+
                 </Box>
             </Box>
         </ThemeProvider>

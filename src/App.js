@@ -25,10 +25,18 @@ import CreateDeviceComponent from './component/CreateDevice';
 import TasksComponent from './component/TasksComponent';
 import HistoryComponent from './component/HistoryComponent';
 import ViolationsComponent from './component/ViolationsComponent';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { ruRU } from '@mui/x-date-pickers';
+import 'dayjs/locale/ru';
+import StatsComponent from './component/StatsComponent';
+
+
 
 function App() {
   return (
-    <>
+    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={'ru'}>
+<>
       {/* This is the alias of BrowserRouter i.e. Router */}
       <Router>
         <Routes>
@@ -91,6 +99,9 @@ function App() {
           <Route exact path='/violations' element={<AuthenticatedRoute/>}>
             <Route exact path='/violations' element={<ViolationsComponent/>}/>
           </Route>
+          <Route exact path='/stats' element={<AuthenticatedRoute/>}>
+            <Route exact path='/stats' element={<StatsComponent/>}/>
+          </Route>
           <Route path='/register' element={<RegisterComponent />}></Route>
           {/* If any route mismatches the upper
     route endpoints then, redirect triggers
@@ -103,6 +114,8 @@ function App() {
         <Book />
       </div> */}
       </>
+    </LocalizationProvider>
+    
   );
 }
 
