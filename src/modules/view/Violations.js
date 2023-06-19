@@ -33,6 +33,9 @@ import secureGetFetch from '../../service/CustomFetch';
 import { USER_TOKEN, API_URL } from '../../service/AuthenticationService';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import { useCallback } from 'react';
+import { render } from '@testing-library/react';
+import { Hidden } from '@mui/material';
 
 const drawerWidth = 240;
 
@@ -86,16 +89,40 @@ function DashboardContent() {
     const navigate = useNavigate();
     const [violations, setViolations] = useState([]);
     const [tempViols, setTempViols] = useState([]);
+    const [numberCount, setNumberCount] = useState(0);
     const [updateFlag, setUpdateFlag] = useState(false);
-    const [alignment, setAlignment] = React.useState('');
+    const [alignment, setAlignment] = React.useState('default');
     const [emptyFlag, setEmptyFlag] = useState(true);
+    const [listItems, setListItems] = useState()
+
+
+    const renderIcons = () => {
+        return <>
+            {
+                mainListItems.map((item, index) => {
+                    const { text, icon, to } = item;
+                    return (
+                        <ListItemButton component={Link} to={item.to} key={text}>
+                            {icon && <ListItemIcon>{icon}</ListItemIcon>}
+                            <ListItemText primary={text} />
+                        </ListItemButton>
+                    );
+                })
+            }
+            <Divider sx={{ my: 1 }} />
+            {secondaryListItems}</>
+    }
 
     const handleChange = (event, newAlignment) => {
+        console.log(newAlignment)
         let temp = violations;
-        if (newAlignment === "checked") {
+        if (newAlignment == "checked") {
             temp = temp.filter(viol => viol.isChecked);
             setTempViols(temp)
-        } else if (newAlignment === "active") {
+            if (temp.length === 0) {
+                setEmptyFlag(false)
+            }
+        } else if (newAlignment == "active") {
             temp = temp.filter(viol => !viol.isChecked)
             if (temp.length === 0) {
                 setEmptyFlag(false)
@@ -118,16 +145,54 @@ function DashboardContent() {
             },
             body: JSON.stringify(id) // body data type must match "Content-Type" header
         }).then((result) => {
-            let val = updateFlag;
-            setUpdateFlag(!val)
+            if (result.status == 200) {
+
+            }
+
         })
+        let count = numberCount;
+        count++;
+        let temp
+        if (alignment === "active") {
+            temp = tempViols.filter(x => x.id == id ? false : true)
+            setTempViols(temp)
+        } else if (alignment === "checked" || alignment === null) {
+            temp = tempViols.find(x => x.id == id);
+            console.log("alignment == checked")
+            let index = tempViols.indexOf(temp)
+            temp.isChecked = true;
+            tempViols[index] = temp
+            setTempViols(tempViols)
+        } else if (alignment === "default") {
+            console.log("YOU ARE HERE")
+            temp = violations.find(x => x.id == id);
+            let index = violations.indexOf(temp)
+            temp.isChecked = true;
+            violations[index] = temp
+            setViolations(violations)
+        }
+
+
+        setNumberCount(count)
+        let tempS = mainListItems.map((item, index) => {
+            const { text, icon, to } = item;
+            return (
+                <ListItemButton component={Link} to={item.to} key={text}>
+                    {icon && <ListItemIcon>{icon}</ListItemIcon>}
+                    <ListItemText primary={text} />
+
+                </ListItemButton>
+            );
+        })
+        setListItems(tempS)
+
     }
 
     useEffect(() => {
         secureGetFetch("http://localhost:8080/violations")
             .then(res => res.json())
             .then((result) => {
-                
+
                 result.forEach(element => {
                     var date = new Date(element.timeOfViolation)
                     // const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -135,9 +200,21 @@ function DashboardContent() {
                     //date.customFormat("#DD#/#MM# #hh#:#mm#:#ss#")
                 });
                 setViolations(result);
+                let temp = mainListItems.map((item, index) => {
+                    const { text, icon, to } = item;
+                    return (
+                        <ListItemButton component={Link} to={item.to} key={text}>
+                            {icon && <ListItemIcon>{icon}</ListItemIcon>}
+                            <ListItemText primary={text} />
+
+                        </ListItemButton>
+                    );
+                })
+                setListItems(temp)
+
             }
             )
-    }, [updateFlag])
+    }, [updateFlag, alignment, numberCount, listItems])
     const [open, setOpen] = useState(false);
     const toggleDrawer = () => {
         setOpen(!open);
@@ -193,17 +270,10 @@ function DashboardContent() {
                     </Toolbar>
                     <Divider />
                     <List component="nav">
-                        {
-                            mainListItems.map((item, index) => {
-                                const { text, icon, to } = item;
-                                return (
-                                    <ListItemButton component={Link} to={item.to} key={text}>
-                                        {icon && <ListItemIcon>{icon}</ListItemIcon>}
-                                        <ListItemText primary={text} />
-                                    </ListItemButton>
-                                );
-                            })
+                        {numberCount >= 0 &&
+                            listItems
                         }
+
                         <Divider sx={{ my: 1 }} />
                         {secondaryListItems}
                     </List>
@@ -298,7 +368,7 @@ function DashboardContent() {
                                                 {/* <TableCell><Button sx={{ color: "green" }} onClick={() => { navigate('/setup/view/' + setup.id) }} size="large">Check</Button></TableCell> */}
                                             </TableRow>
                                         ))}
-                                        
+
                                     </TableBody>
                                 </Table>
                             </TableContainer>
