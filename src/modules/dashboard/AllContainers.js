@@ -16,7 +16,8 @@ import Grid from '@mui/material/Grid';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { mainListItems, secondaryListItems } from './listitems';
+//import { mainListItems, secondaryListItems } from './listitems';
+import { USER_TOKEN, API_URL } from '../../service/AuthenticationService';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -26,9 +27,106 @@ import { useNavigate,  Link } from 'react-router-dom';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import GrassIcon from '@mui/icons-material/Grass';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import SettingsIcon from '@mui/icons-material/Settings';
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import DangerousIcon from '@mui/icons-material/Dangerous';
 
 
 const drawerWidth = 240;
+
+function DangerousIconWithNumber({ size = 16, count = 0 }) {
+    const [active, setActive] = React.useState(0)
+  
+    fetch(API_URL + "/violations/stats", {
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': sessionStorage.getItem(USER_TOKEN)
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    }).then(res => res.json())
+      .then((result => {
+        setActive(result)
+      }))
+  
+    return (
+      <div  style={{ fontSize: size }}>
+        <DangerousIcon color={active === 0 ? 'inherit' : 'error'}  />
+        <Typography component="span" >
+          {active + ''}
+        </Typography>
+      </div>
+    );
+  }
+  
+  function AssignmentIconWithNumber({ size = 16, count = 0 }) {
+    const [active, setActive] = React.useState(0)
+  
+    fetch(API_URL + "/tasks/ready", {
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': sessionStorage.getItem(USER_TOKEN)
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    }).then(res => res.json())
+      .then((result => {
+        setActive(result)
+      }))
+  
+    return (
+      <div  style={{ fontSize: size }}>
+        <AssignmentIcon color={active === 0 ? 'inherit' : 'success'}  />
+        <Typography component="span" >
+          {active + ''}
+        </Typography>
+      </div>
+    );
+  }
+
+  const mainListItems = [
+    {
+      text: "Помещения",
+      icon: <WarehouseIcon />,
+      to: "/containers" // <-- add link targets
+    },
+    {
+      text: "Растения",
+      icon: <GrassIcon />,
+      to: "/plants" // <-- add link targets
+    },
+    {
+      text: "Устройства",
+      icon: <SettingsIcon />,
+      to: "/devices/all"
+    },
+    {
+      text: "Задачи",
+      icon: <AssignmentIconWithNumber />,
+      to: "/tasks"
+    },
+    {
+      text: "История",
+      icon: <HistoryEduIcon />,
+      to: "/history"
+    },
+    {
+      text: "Нарушения",
+      icon: <DangerousIconWithNumber />,
+      to: "/violations"
+    },
+    {
+      text: "Статистика",
+      icon: <AnalyticsIcon />,
+      to: "/stats"
+    }
+  
+  ]
+
 
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
@@ -79,6 +177,7 @@ const mdTheme = createTheme();
 function DashboardContent() {
 
     const [containers, setContainers] = useState([]);
+    const [listItems, setListItems] = useState()
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -86,8 +185,48 @@ function DashboardContent() {
             .then(res => res.json())
             .then((result) => {
                 setContainers(result);
+                let mainListItems = [
+                    {
+                      text: "Помещения",
+                      icon: <WarehouseIcon />,
+                      to: "/containers" // <-- add link targets
+                    },
+                    {
+                      text: "Растения",
+                      icon: <GrassIcon />,
+                      to: "/plants" // <-- add link targets
+                    },
+                    {
+                      text: "Устройства",
+                      icon: <SettingsIcon />,
+                      to: "/devices/all"
+                    },
+                    {
+                      text: "Задачи",
+                      icon: <AssignmentIconWithNumber />,
+                      to: "/tasks"
+                    },
+                    {
+                      text: "История",
+                      icon: <HistoryEduIcon />,
+                      to: "/history"
+                    },
+                    {
+                      text: "Нарушения",
+                      icon: <DangerousIconWithNumber />,
+                      to: "/violations"
+                    },
+                    {
+                      text: "Статистика",
+                      icon: <AnalyticsIcon />,
+                      to: "/stats"
+                    }
+                  
+                  ]
+                  setListItems(mainListItems)
             }
             )
+        
     }, [])
     const [open, setOpen] = useState(true);
     const toggleDrawer = () => {
@@ -145,6 +284,28 @@ function DashboardContent() {
                     <Divider />
                     <List component="nav">
                     {
+                            listItems ?  listItems.map((item, index) => {
+                                const { text, icon } = item;
+                                return (
+                                    <ListItemButton component={Link} to={item.to} key={text}>
+                                        {icon && <ListItemIcon>{icon}</ListItemIcon>}
+                                        <ListItemText primary={text} />
+                                    </ListItemButton>
+                                );
+                            })
+                            :
+                            mainListItems.map((item, index) => {
+                                const { text, icon } = item;
+                                return (
+                                    <ListItemButton component={Link} to={item.to} key={text}>
+                                        {icon && <ListItemIcon>{icon}</ListItemIcon>}
+                                        <ListItemText primary={text} />
+                                    </ListItemButton>
+                                );
+                            })
+                        
+                        }  
+                    {/* {
                             mainListItems.map((item, index) => {
                                 const { text, icon, to } = item;
                                 return (
@@ -154,9 +315,9 @@ function DashboardContent() {
                                     </ListItemButton>
                                 );
                             })
-                        }
+                        } */}
                         <Divider sx={{ my: 1 }} />
-                        {secondaryListItems}
+                        
                     </List>
                 </Drawer>
                 <Box

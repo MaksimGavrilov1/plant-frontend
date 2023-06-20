@@ -14,7 +14,11 @@ import Badge from '@mui/material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { mainListItems, secondaryListItems } from '../dashboard/listitems';
+import GrassIcon from '@mui/icons-material/Grass';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import SettingsIcon from '@mui/icons-material/Settings';
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -33,11 +37,100 @@ import secureGetFetch from '../../service/CustomFetch';
 import { USER_TOKEN, API_URL } from '../../service/AuthenticationService';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import { useCallback } from 'react';
-import { render } from '@testing-library/react';
-import { Hidden } from '@mui/material';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import DangerousIcon from '@mui/icons-material/Dangerous';
+
 
 const drawerWidth = 240;
+
+function DangerousIconWithNumber({ size = 16, count = 0 }) {
+    const [active, setActive] = React.useState(0)
+  
+    fetch(API_URL + "/violations/stats", {
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': sessionStorage.getItem(USER_TOKEN)
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    }).then(res => res.json())
+      .then((result => {
+        setActive(result)
+      }))
+  
+    return (
+      <div  style={{ fontSize: size }}>
+        <DangerousIcon color={active === 0 ? 'inherit' : 'error'}  />
+        <Typography component="span" >
+          {active + ''}
+        </Typography>
+      </div>
+    );
+  }
+  
+  function AssignmentIconWithNumber({ size = 16, count = 0 }) {
+    const [active, setActive] = React.useState(0)
+  
+    fetch(API_URL + "/tasks/ready", {
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': sessionStorage.getItem(USER_TOKEN)
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    }).then(res => res.json())
+      .then((result => {
+        setActive(result)
+      }))
+  
+    return (
+      <div  style={{ fontSize: size }}>
+        <AssignmentIcon color={active === 0 ? 'inherit' : 'success'}  />
+        <Typography component="span" >
+          {active + ''}
+        </Typography>
+      </div>
+    );
+  }
+
+  const mainListItems = [
+    {
+      text: "Помещения",
+      icon: <WarehouseIcon />,
+      to: "/containers" // <-- add link targets
+    },
+    {
+      text: "Растения",
+      icon: <GrassIcon />,
+      to: "/plants" // <-- add link targets
+    },
+    {
+      text: "Устройства",
+      icon: <SettingsIcon />,
+      to: "/devices/all"
+    },
+    {
+      text: "Задачи",
+      icon: <AssignmentIconWithNumber />,
+      to: "/tasks"
+    },
+    {
+      text: "История",
+      icon: <HistoryEduIcon />,
+      to: "/history"
+    },
+    {
+      text: "Нарушения",
+      icon: <DangerousIconWithNumber />,
+      to: "/violations"
+    },
+    {
+      text: "Статистика",
+      icon: <AnalyticsIcon />,
+      to: "/stats"
+    }
+  
+  ]
 
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
@@ -94,24 +187,6 @@ function DashboardContent() {
     const [alignment, setAlignment] = React.useState('default');
     const [emptyFlag, setEmptyFlag] = useState(true);
     const [listItems, setListItems] = useState()
-
-
-    const renderIcons = () => {
-        return <>
-            {
-                mainListItems.map((item, index) => {
-                    const { text, icon, to } = item;
-                    return (
-                        <ListItemButton component={Link} to={item.to} key={text}>
-                            {icon && <ListItemIcon>{icon}</ListItemIcon>}
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    );
-                })
-            }
-            <Divider sx={{ my: 1 }} />
-            {secondaryListItems}</>
-    }
 
     const handleChange = (event, newAlignment) => {
         console.log(newAlignment)
@@ -174,17 +249,6 @@ function DashboardContent() {
 
 
         setNumberCount(count)
-        let tempS = mainListItems.map((item, index) => {
-            const { text, icon, to } = item;
-            return (
-                <ListItemButton component={Link} to={item.to} key={text}>
-                    {icon && <ListItemIcon>{icon}</ListItemIcon>}
-                    <ListItemText primary={text} />
-
-                </ListItemButton>
-            );
-        })
-        setListItems(tempS)
 
     }
 
@@ -200,17 +264,45 @@ function DashboardContent() {
                     //date.customFormat("#DD#/#MM# #hh#:#mm#:#ss#")
                 });
                 setViolations(result);
-                let temp = mainListItems.map((item, index) => {
-                    const { text, icon, to } = item;
-                    return (
-                        <ListItemButton component={Link} to={item.to} key={text}>
-                            {icon && <ListItemIcon>{icon}</ListItemIcon>}
-                            <ListItemText primary={text} />
-
-                        </ListItemButton>
-                    );
-                })
-                setListItems(temp)
+                let mainListItems = [
+                    {
+                      text: "Помещения",
+                      icon: <WarehouseIcon />,
+                      to: "/containers" // <-- add link targets
+                    },
+                    {
+                      text: "Растения",
+                      icon: <GrassIcon />,
+                      to: "/plants" // <-- add link targets
+                    },
+                    {
+                      text: "Устройства",
+                      icon: <SettingsIcon />,
+                      to: "/devices/all"
+                    },
+                    {
+                      text: "Задачи",
+                      icon: <AssignmentIconWithNumber />,
+                      to: "/tasks"
+                    },
+                    {
+                      text: "История",
+                      icon: <HistoryEduIcon />,
+                      to: "/history"
+                    },
+                    {
+                      text: "Нарушения",
+                      icon: <DangerousIconWithNumber />,
+                      to: "/violations"
+                    },
+                    {
+                      text: "Статистика",
+                      icon: <AnalyticsIcon />,
+                      to: "/stats"
+                    }
+                  
+                  ]
+                  setListItems(mainListItems)
 
             }
             )
@@ -270,12 +362,31 @@ function DashboardContent() {
                     </Toolbar>
                     <Divider />
                     <List component="nav">
-                        {numberCount >= 0 &&
-                            listItems
-                        }
+                    {
+                            listItems ?  listItems.map((item, index) => {
+                                const { text, icon } = item;
+                                return (
+                                    <ListItemButton component={Link} to={item.to} key={text}>
+                                        {icon && <ListItemIcon>{icon}</ListItemIcon>}
+                                        <ListItemText primary={text} />
+                                    </ListItemButton>
+                                );
+                            })
+                            :
+                            mainListItems.map((item, index) => {
+                                const { text, icon } = item;
+                                return (
+                                    <ListItemButton component={Link} to={item.to} key={text}>
+                                        {icon && <ListItemIcon>{icon}</ListItemIcon>}
+                                        <ListItemText primary={text} />
+                                    </ListItemButton>
+                                );
+                            })
+                        
+                        }  
 
                         <Divider sx={{ my: 1 }} />
-                        {secondaryListItems}
+                        
                     </List>
                 </Drawer>
                 <Box
